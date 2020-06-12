@@ -3,22 +3,29 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [
+let routes = [
   {
     path: '/',
     name: 'Login',
-    component: () => import(/* webpackChunkName: "about" */ '../views/login')
+    component: () => import(/* webpackChunkName: "Login" */ '../views/login')
   },
   {
+    redirect:'/',
     path: '/Login',
     name: 'Login',
-    component: () => import(/* webpackChunkName: "about" */ '../views/login')
+    component: () => import(/* webpackChunkName: "Login" */ '../views/login')
   },
-
+  {
+    path:'*',
+    name:'404',
+    component: () => import(/* webpackChunkName: "404" */ '../views/error/404.vue')
+  }
 ]
 
-const router = new VueRouter({
-  routes
+let router = new VueRouter({
+  mode: 'history', //后端支持可开
+  routes,
+  scrollBehavior: () => ({ y: 0 })
 })
 
 export default router

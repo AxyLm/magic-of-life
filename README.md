@@ -1,4 +1,4 @@
-# crazy-of-life
+# magic-of-life
 
 ## Project setup
 ```
