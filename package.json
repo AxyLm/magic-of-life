@@ -1,5 +1,5 @@
 {
-  "name": "crazy-of-life",
+  "name": "magic-of-life",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AxyLm/crazy-of-life.git"
+    "url": "git+https://github.com/AxyLm/magic-of-life.git"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.0",
