@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from '../views/Layout'
-const _import = require( "./_import_development")
+const _import = require( "./_import_"+process.env.NODE_ENV)
 
 Vue.use(VueRouter)
 let routerList =  JSON.parse(localStorage.getItem('router'))
@@ -22,6 +22,7 @@ let routes = [
   {
     path:'/Error',
     name: 'Error',
+    component:Layout,
     children:[
       {
         path:'404',
@@ -32,7 +33,6 @@ let routes = [
   },
 ]
 
-console.log(routes)
 let router = new VueRouter({
   mode: 'history', //后端支持可开
   routes,
@@ -42,13 +42,15 @@ let router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
-  console.log('to'+to.path,'   from'+from.path
-  
-  ,
-  router.currentRoute
-  )
+
+  console.log( from.path + '--->' + to.path)
   if(to.path == '/Login'){
     next()
+    return
+  }
+  global.openMenu = to.path
+  if (!validMenu(to)) {
+    next({ path: '/Error/404', query: { from: from.path }})
     return
   }
   if(!getRouter){
@@ -90,7 +92,6 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
   const accessedRouters = asyncRouterMap.filter(route => {
     try {
       if (route.component) {
-        console.log(route)
         if (route.component === 'Layout') {//Layout组件特殊处理
           route.component = Layout
           route.redirect =route.path +'/'+ route.children[0].path
@@ -99,9 +100,10 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
           route.component = _import(route.component)
         }
       }
+      menus.push(route)
     } catch (e) {
       console.error(e)
-      // route.component = _import('404')
+      route.component = _import('404')
       // return route
     }
     if (route.children && route.children.length) {
@@ -109,8 +111,29 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
     }
     return true
   })
-  console.log(accessedRouters)
   return accessedRouters
 }
-
+export function validMenu(to) {
+  if ((to.path.indexOf('/Error/404') >= 0 || to.path === '/')) {
+    return true
+  }
+  if (menus.length > 0 && (to.name || to.path)) {
+    const toName = to.name
+    const toPath = to.path
+    for (let i = 0; i < menus.length; i++) {
+      if (menus[i].name === toName || menus[i].path === toPath) {
+        return true
+      }
+    }
+    // menus.forEach(item=>{
+    //   if (item.name === toName || item.path === toPath) {
+    //     return true
+    //   }
+    // })
+    console.log(menus,to)
+    console.log('Not Find to Page Redirect to 404 page')
+    return false
+  }
+  return true
+}
 export default router

@@ -59,7 +59,6 @@ export default {
                         }
                     ]
                 },
-                
             ],
             adminList:[
                 {

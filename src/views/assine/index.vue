@@ -1,13 +1,18 @@
 <template>
     <div>
       <a-card title="assine" style="width: 300px">
-            <a slot="extra" href="#">more</a>
+            <i slot="extra" href="#" @click="con()">more</i>
              <a-empty />
         </a-card>
     </div>
 </template>
 <script>
 export default {
-    name:'assine'
+    name:'assine',
+    methods:{
+        con(){
+            console.log(global)
+        }
+    }
 }
 </script>

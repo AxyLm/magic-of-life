@@ -20,9 +20,7 @@
           <router-view/>
         </transition>
       </a-layout-content>
-      <a-layout-footer style="textAlign: center">
-        Ant Design ©2020 Created by Ant UED
-      </a-layout-footer>
+      <a-layout-footer style="textAlign: center"></a-layout-footer>
     </a-layout>
   </a-layout>
 </template>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-card title="uaserinf" style="">
-            <a slot="extra" href="#">more</a>
+            <a slot="extra" href="#" @click="con()">more</a>
             <div style="display:flex">
 
               <a-timeline>
@@ -59,6 +59,11 @@
 </template>
 <script>
 export default {
-    name:'userinfo'
+    name:'userinfo',
+    methods:{
+        con(){
+            console.log(global)
+        }
+    }
 }
 </script>
