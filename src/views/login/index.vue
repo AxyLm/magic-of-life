@@ -1,11 +1,11 @@
 <template>
   <div id="Login">
         <a-form-model ref='userInfo' :rules="rules" :model="userInfo">
-            <a-form-model-item ref="us" prop="userName">
-                <a-input v-model="userInfo.userName" focus placeholder="用户名" clearable type='text'/>
+            <a-form-model-item ref="us" prop="username">
+                <a-input v-model="userInfo.username" focus placeholder="用户名" clearable type='text'/>
             </a-form-model-item>
-            <a-form-model-item ref="ps" prop="passWord">
-                <a-input v-model="userInfo.passWord" placeholder="密码" clearable type="password" :show-password='true'/>
+            <a-form-model-item ref="ps" prop="password">
+                <a-input v-model="userInfo.password" placeholder="密码" clearable type="password" :show-password='true'/>
             </a-form-model-item>
             <a-form-model-item>
                 <a-button type='submit' @click="Login()">sumbit</a-button>
@@ -19,8 +19,8 @@ export default {
     data(){
         return{
             userInfo:{
-                userName:'',
-                passWord:'',
+                username:'',
+                password:'',
             },
             rules:{
                 userName:[
@@ -37,82 +37,99 @@ export default {
             routerList:[
                 {
                     path: '/Magic',
+                    route:'/Magic',
                     component: "Layout",
+                    title:'首页',
+                    icon:'unordered-list',
                     children:[
                         {
                             path: 'report',
+                            route:'/Magic/report',
+                            title:'统计报表',
+                            icon:'area-chart',
                             component: "report/index"
                         },
                         {
                             path: 'assine',
+                            route:'/Magic/assine',
+                            title:'统计报表',
+                            icon:'appstore',
                             component: "assine/index"
                         },
                     ]
                 },
                 {
-                    path: '/user',
+                    path: '/cloud',
+                    route:'/cloud',
                     component: 'Layout',
+                    title:'内容管理',
+                    icon:'cloud',
+                    children:[
+                        {
+                            path:'Media',
+                            route:'/cloud/media',
+                            title:'素材管理',
+                            icon:'file-image',
+                            component:'cloud/media/index'
+                        },
+                        {
+                            path:'Files',
+                            route:'/cloud/files',
+                            title:'文件管理',
+                            icon:'file',
+                            component:'cloud/files/index'
+                        }
+                    ]
+                },
+                {
+                    path: '/user',
+                    route:'/user',
+                    component: 'Layout',
+                    title:'用户',
+                    icon:'user',
                     children:[
                         {
                             path:'info',
+                            route:'/user/info',
+                            title:'用户信息',
+                            icon:'edit',
                             component:'userInfo/index'
                         }
                     ]
                 },
             ],
-            adminList:[
-                {
-                    path: '/Magic',
-                    name: 'Magic',
-                    component: "magic",
-                    children:[
-                    {
-                        path: '/report',
-                        name: 'report',
-                        component: "report"
-                    },
-                    {
-                        path: '/assine',
-                        name: 'assine',
-                        component: "assine"
-                    },
-                    {
-                        path: '/userInfo',
-                        name: 'userInfo',
-                        component: 'userInfo'
-                    },
-                    ]
-                },
-            ]
+            loginLoading:'',
         }
     },
     mounted(){
-        
     },
     methods:{
         Login(){
+            this.$message.loading({ content: 'Loading...', key:'loading' });
             this.$refs.userInfo.validate(valid => {
                 if (valid) {
-                    this.$message.loading('Action in progress..', 1,()=>{
-
-                        this.$router.push('/Magic')
-                    });
-                    // this.$router.addRoutes( this.routerUtile(this.routerList) )
-                    // return
-                    localStorage.setItem('router',JSON.stringify(this.routerList))
-                    // localStorage.setItem('router',this.routerList)
-
-
-                    console.log(this.$route,this.$router)
+                    
+                    console.log(this)
+                    this.$axios.post(this.$api.url + '/user/login',{
+                        username:this.userInfo.username,
+                        password:this.userInfo.password,
+                    })
+                    .then(res=>{
+                        console.log(res)
+                        if(res.code == 0){
+                            localStorage.setItem('router',JSON.stringify(this.routerList))
+                            this.$router.push('/Magic')
+                            this.$message.success({ content: '登录成功', key:'loading',duration:0.5});
+                        }
+                    })
+                    .catch(err=>{
+                        console.log(err)
+                    })
                 } else {
-                    console.log('error submit!!');
+                    console.log(valid)
                     return false;
                 }
-                });
-            // this.$message({
-            //     iconClass:'el-icon-loading',
-            //     message:'loading',
-            // });
+            });
         },
         routerUtile(route){
             route.forEach(item => {

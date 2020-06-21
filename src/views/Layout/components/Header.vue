@@ -10,9 +10,35 @@
       </a-breadcrumb-item>
       <a-breadcrumb-item>Application</a-breadcrumb-item>
     </a-breadcrumb>
-    <a-avatar size="large" icon="user" />
+     <a-dropdown>
+      <a-avatar size="large" src='@/static/belief.jpg'  >
+        <img src="@/static/belief.jpg" alt="" srcset="" slot='icon'>
+      </a-avatar>
+
+
+      <a-menu slot="overlay">
+        <a-menu-item key="1"> <a-icon type="user" />用户信息</a-menu-item>
+        <a-menu-item key="2" @click="signOut"> <a-icon type="poweroff" />退出登录</a-menu-item>
+        
+      </a-menu>
+    </a-dropdown>
   </div>
 </template>
+<script>
+export default {
+  data(){
+    return{
+
+    }
+  },
+  methods: {
+    signOut(){
+      localStorage.removeItem('router');
+      this.$router.push('/Login')
+    }
+  },
+}
+</script>
 <style lang="scss" scoped>
 #m-header{
     height:100%;

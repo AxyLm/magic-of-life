@@ -1,14 +1,24 @@
 <template>
   <div>
-    <a-menu theme="dark" mode="inline" :default-selected-keys="openMenu">
-      <a-menu-item v-for="(item) in menuLists" :key='item.path'>
-        <router-link :to="item.path">
-          <a-icon type="user" />
+    <a-menu theme="dark" mode="inline" :default-selected-keys="selMenu" :default-open-keys="openMenu">
+      <a-sub-menu v-for="(item) in menuLists" :key='item.route'>
+
+        <router-link :to="item.route" slot="title">
+          <a-icon :type="item.icon" />
           <span class="nav-text">
-            {{item.path}}
+            {{item.title}}
           </span>
         </router-link>
-      </a-menu-item>
+
+        <a-menu-item  v-for="(sub) in item.children" :key='sub.route'>
+            <router-link :to="sub.route">
+            <a-icon :type="sub.icon" />
+            <span class="nav-text">
+              {{sub.title}}
+            </span>
+          </router-link>
+        </a-menu-item>
+      </a-sub-menu>
     </a-menu>
   </div>
 </template>
@@ -18,7 +28,8 @@ export default {
     data(){
       return{
         menuLists:[],
-        openMenu:[]
+        openMenu:[],
+        selMenu:[]
       }
     },
     watch:{
@@ -27,12 +38,17 @@ export default {
         console.log(this.menuLists)
       },
       $route(){
-        this.openMenu = [this.$route.redirectedFrom]
-        console.log(this.openMenu,this.menuLists)
+        this.selMenu = [this.$route.path]
+        this.openMenu = [this.$route.matched[0].path]
+        console.log('route',this.$route,)
       }
     },
     created(){
+      this.selMenu = [this.$route.path]
+      this.openMenu = [this.$route.matched[0].path]
+      
       this.menuLists = global.antRouter
+      console.log(this.menuLists)
     },
     methods:{
       menuInit(){

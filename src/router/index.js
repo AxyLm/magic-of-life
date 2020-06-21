@@ -4,7 +4,6 @@ import Layout from '../views/Layout'
 const _import = require( "./_import_"+process.env.NODE_ENV)
 
 Vue.use(VueRouter)
-let routerList =  JSON.parse(localStorage.getItem('router'))
 let getRouter;
 let menus = []
 let routes = [
@@ -58,12 +57,6 @@ router.beforeEach((to, from, next) => {
   }else{
     next()
   }
-  // if(from.path.indexOf('/Magic') && to.name == '404'){
-  //   next({ path: '/Error/404'})
-  // }else{
-  //   next()
-  // }
-  // ...
 })
 router.onError((err)=>{
   console.log(err)
@@ -83,12 +76,14 @@ router.onReady(()=>{
   )
 })
 function routerGo(to, next) {
+  let routerList =  JSON.parse(localStorage.getItem('router'))
   getRouter = filterAsyncRouter(routerList) //过滤路由
   router.addRoutes(getRouter) //动态添加路由
   global.antRouter = getRouter //将路由数据传递给全局变量，做侧边栏菜单渲染工作
   next({ ...to, replace: true })
 }
 export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路由字符串，转换为组件对象
+  console.log(asyncRouterMap)
   const accessedRouters = asyncRouterMap.filter(route => {
     try {
       if (route.component) {
@@ -104,7 +99,6 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
     } catch (e) {
       console.error(e)
       route.component = _import('404')
-      // return route
     }
     if (route.children && route.children.length) {
       filterAsyncRouter(route.children)
@@ -125,11 +119,6 @@ export function validMenu(to) {
         return true
       }
     }
-    // menus.forEach(item=>{
-    //   if (item.name === toName || item.path === toPath) {
-    //     return true
-    //   }
-    // })
     console.log(menus,to)
     console.log('Not Find to Page Redirect to 404 page')
     return false
