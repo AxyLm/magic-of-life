@@ -1,5 +1,7 @@
 <template>
   <a-layout id="components-layout-demo-responsive">
+    <transition>
+    
     <a-layout-sider
       breakpoint="lg"
       collapsed-width="0"
@@ -17,6 +19,8 @@
       <menus theme='dark'/>
       
     </a-layout-sider>
+    </transition>
+
     <a-drawer
         placement="left"
         :closable="false"
@@ -42,7 +46,22 @@
           <router-view/>
         </transition>
       </a-layout-content>
-      <a-layout-footer style="textAlign: center"></a-layout-footer>
+      <a-layout-footer style="textAlign: center">
+        <template v-if="!mobileSilder">
+          <div>
+            <p>Copyright © 2020 浮生若梦 All Rights Reserved.</p>
+            <p>京ICP备19051903号</p>
+          </div>
+        </template>
+        <template v-else>
+          <div>
+            <p>Copyright © 2020 浮生若梦</p>
+            <p>All Rights Reserved.</p>
+            <p>京ICP备19051903号</p>
+          </div>
+        </template>
+       
+      </a-layout-footer>
     </a-layout>
   </a-layout>
 </template>
