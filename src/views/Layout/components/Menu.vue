@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-menu theme="dark" mode="inline" :default-selected-keys="selMenu" :default-open-keys="openMenu">
+    <a-menu :theme="theme" mode="inline" :default-selected-keys="selMenu" :default-open-keys="openMenu" >
       <a-sub-menu v-for="(item) in menuLists" :key='item.route'>
 
         <router-link :to="item.route" slot="title">
@@ -30,6 +30,11 @@ export default {
         menuLists:[],
         openMenu:[],
         selMenu:[]
+      }
+    },
+    props:{
+      theme:{
+        default:'dark'
       }
     },
     watch:{

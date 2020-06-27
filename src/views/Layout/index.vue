@@ -5,14 +5,36 @@
       collapsed-width="0"
       @collapse="onCollapse"
       @breakpoint="onBreakpoint"
+      :collapsed='collapsed'
+      :trigger='null'
+      v-show="!mobileSilder"
     >
+
+    
       <div class="logo" style="overflow:hidden">
         <img src="https://gw.alipayobjects.com/zos/alicdn/hzEndUVEx/Layout.svg" alt="" srcset="">
       </div>
-      <menus/>
+      <menus theme='dark'/>
+      
     </a-layout-sider>
+    <a-drawer
+        placement="left"
+        :closable="false"
+        :visible="mobileSilderOpen"
+        @close="onClose"
+        v-show='mobileSilder'
+        :bodyStyle='{padding:"20px 0 20px 10px"}'
+      >
+        <div class="logo" style="overflow:hidden;maxHeight:40px" slot="title">
+          <img src="https://gw.alipayobjects.com/zos/alicdn/hzEndUVEx/Layout.svg" alt="" srcset="">
+        </div>
+         <menus theme='light'/>
+      </a-drawer>
     <a-layout>
-      <a-layout-header :style="{ background: '#fff', padding: 0 }" >
+      <a-layout-header :style="{ background: '#fff', padding: 0 ,display:'flex'}" >
+        <a-button type="primary" style="margin-bottom: 16px" @click="toggleCollapsed">
+          <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" />
+        </a-button>
         <mHeader/>
       </a-layout-header>
       <a-layout-content :style="{ margin: '24px 16px 0' }">
@@ -32,13 +54,31 @@ export default {
     components:{menus,mHeader},
     data(){
         return{
-            
+            collapsed:false,
+            mobileSilder:false,
+            mobileSilderOpen:false
         }
     },
     mounted(){
-        
+        window.onresize = ((e)=>{
+          if(e.currentTarget.innerWidth <= 940){
+            this.mobileSilder = this.collapsed = true
+          }else{
+            this.collapsed = this.mobileSilder = this.mobileSilderOpen =  false
+          }
+        })
     },
     methods:{
+      toggleCollapsed() {
+        this.collapsed = !this.collapsed;
+
+        if(this.mobileSilder){
+          this.mobileSilderOpen = !this.mobileSilderOpen
+        }
+      },
+      onClose(){
+        this.mobileSilderOpen = false
+      },
       onCollapse(collapsed, type) {
         console.log(collapsed, type);
       },

@@ -1,22 +1,21 @@
 <template>
     <div class="media">
-        <a-card class="media" title='素材库' style="height:100%;overflow:hidden" :bodyStyle='{height:"calc(100% - 50px)",padding:"0 24px"}'>
-            <a-button type="primary" shape="circle" icon='plus' slot="extra" class='add' @click="showAddModal"></a-button>
-
-        <div style='height:100%,'
-            v-infinite-scroll="handleInfiniteOnLoad"
-            class="demo-infinite-container"
-            :infinite-scroll-disabled="busy"
-            :infinite-scroll-distance="10">
-            <a-list :data-source="fileList" :grid='grid'>
-            <a-list-item slot="renderItem" slot-scope="item, index" style="padding:10px;overflow:hidden" ref='listItem' class="reveal-top">
-                <img src="http://localhost:9200/public/image/1592705542007-6447.jpg" alt="" srcset=""  style="width:200px;height:400px">
-            </a-list-item>
-            <div v-if="loading && !busy" class="demo-loading-container">
-                <a-spin />
+        <a-card class="media" title='素材库' style="height:100%;overflow:hidden" :bodyStyle='{height:"calc(100% - 60px)",padding:"0 24px"}'>
+            <a-button type="primary" shape="circle" icon='plus' slot="extra" class='add' @click="showAddModal"/>
+            <div style='height:100%,'
+                v-infinite-scroll="handleInfiniteOnLoad"
+                class="demo-infinite-container"
+                :infinite-scroll-disabled="busy"
+                :infinite-scroll-distance="1">
+                <a-list :data-source="fileLists" :grid='grids'>
+                    <a-list-item slot="renderItem" slot-scope="item" style="padding:10px;overflow:hidden;" ref='listItem' >
+                        <div  class="imgitem" :style='"background-image: url(http://localhost:9200/public/image/"+item.path+");"/*height:"+(item.ratio>1.5?"184px":"400px")*/'/>
+                    </a-list-item>
+                    <div v-if="loading && !busy" class="demo-loading-container">
+                        <a-spin />
+                    </div>
+                </a-list>
             </div>
-            </a-list>
-        </div>
         </a-card>
         <a-modal v-model="addModal" title="添加" on-ok="handleOk" :destroyOnClose='true'>
             <a-upload-dragger
@@ -25,19 +24,15 @@
                 :action="this.$api.url + '/file/upload'"
                 @change="handleChange"
                 @preview='preview'
+                :accept='accept'
+                listType='picture'
+                @reject='rejectErr'
             >
-                <p class="ant-upload-drag-icon">
-                <a-icon type="inbox" />
-                </p>
-                <p class="ant-upload-text">
-                Click or drag file to this area to upload
-                </p>
-                <p class="ant-upload-hint">
-                Support for a single or bulk upload. Strictly prohibit from uploading company data or other
-                band files
-                </p>
+                <p class="ant-upload-drag-icon"><a-icon type="inbox" /></p>
+                <p class="ant-upload-text">拖拽图片至此可上传或者点击选择图片</p>
+                <p class="ant-upload-hint">支持单次或批量上传。 严格禁止上传隐私数据</p>
             </a-upload-dragger>
-            <a-button slot='footer' type="primary" @click="imgListSub" v-if="false">提交</a-button>
+            <a-button slot='footer' type="primary" @click="imgListSub" v-if="true">提交</a-button>
         </a-modal>
         <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel" >
             <img alt="example" style="maxHeight:100%;maxWidth:100%;" :src="previewImage" @onerror='imgErr' @onsuccess='imgsucc' v-if="imgerr"/>
@@ -54,14 +49,15 @@ export default {
     data(){
         return{
             scrollReveal: scrollReveal(),
-            grid:{
-                xs:2,
-                sm:4,
-                md:6,
-                lg:8,
-                xl:10,
-                xxl:12,
+            grids:{
+                xs:1,
+                sm:2,
+                md:4,
+                lg:4,
+                xl:4,
+                xxl:6,
             },
+            accept:'image/*',
             addModal:false,
             previewImage:'',
             previewVisible:false,
@@ -69,40 +65,10 @@ export default {
             imgLoading:false,
             loading: false,
             busy: false,
-            fileList:[
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-            ],
+            fileList:[],
+            fileLists:[],
+            page:1,
+            pageSize:20,
         }
     },
     mounted() {
@@ -126,34 +92,62 @@ export default {
         });
 
  console.log(this.$refs.listItem)
-
+        this.initList()
     },  
     methods: {
+        rejectErr(){
+            this.$message.error('错误的文件类型',1);
+        },
+        initList(){
+            this.$axios.post(this.$api.url + '/xuanque/getInfoByPage',{
+                pageSize:this.pageSize,
+                page:this.page
+            })
+            .then((res)=>{
+                let list =  res.data.list
+                this.fileLists = list
+                if(list.length !== this.pageSize){
+                    this.busy = false
+                }else{
+                    this.loading = true
+                }
+            })
+        },
         handleInfiniteOnLoad() {
-            console.log(this)
-            this.loading = true
-            let list = [
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-                {title:'a',name:{last:1}},
-            ]
-            this.fileList = this.fileList.concat(list)
-            this.loading = false
-            let item = document.getElementsByClassName('listItem')
-           item.classList.add('reveal-top')
-           console.log(item)
+            if(this.loading){
+                this.page++
+                this.$axios.post(this.$api.url + '/xuanque/getInfoByPage',{
+                    pageSize:this.pageSize,
+                    page:this.page
+                })
+                .then((res)=>{
+                    let list =  res.data.list
+                    this.fileLists = this.fileLists.concat(list)
+                    if(list.length !== this.pageSize){
+                        this.busy = false
+                        this.loading = false
+                    }else{
+                        this.loading = true
+                    }
+                })
+            }
         },
         showAddModal(){
             this.addModal = true
         },
         handleChange(e){
-            console.log(e.file.status)
-            if((('done|remove').indexOf(e.file.status) > -1) && e.file.response.code == 0){
+            console.log(e.file.status,e)
+            if((('done|removed').indexOf(e.file.status) > -1) && e.file.response.code == 0){
                 console.log(e)
+                this.fileList = e.fileList
             }
-            this.fileList = e.fileList
+            if(e.file.status !== 'removed'  && e.file.response.code !== 0){
+                if(e.file.response.code == -2){
+                    this.$message.error('错误的文件类型',1);
+                }else{
+                    this.$message.error('系统异常',1);
+                }
+            }
         },
         preview(e){
             this.imgerr = true
@@ -179,12 +173,41 @@ export default {
 
         },
         imgListSub(){
+            this.$message.loading({ content: '上传中...', key:'imgsub' });
+
+            this.fileList.forEach(item => {
+                this.$axios.post(this.$api.url + '/xuanque/picAdd',{
+                    path:item.response.data.imgPath
+                })
+                .then((res)=>{
+                    if(res.code == 0){
+                        this.addModal = false
+                        this.$message.success({ content: '上传成功', key:'imgsub',duration:0.5});
+                        if(this.page == 1){
+                            this.initList()
+                        }
+                    }else if(res.code == -2){
+                        this.$message.error('错误的文件类型',1);
+                    }else{
+                        throw '内部错误'
+                    }
+                })
+                .catch((err)=>{
+                    this.$message.error('网络异常',1);
+                })
+            });
             console.log(this.fileList)
         }
     },
 }
 </script>
 <style lang="scss" scoped>
+.imgitem{
+    background:url(http://localhost:9200/public/image/1593226339645-9006.jpg) no-repeat center;
+    background-size: auto 100%;
+    width:100%;
+    height:400px;
+}
 .media{
     height: 100%;
     .add{
