@@ -19,9 +19,9 @@
         </a-card>
         <a-modal v-model="addModal" title="添加" on-ok="handleOk" :destroyOnClose='true'>
             <a-upload-dragger
-                name="pic"
+                name="img"
                 :multiple="true"
-                :action="this.$api.url + '/file/upload'"
+                :action="'http://localhost:1617/file/upload'"
                 @change="handleChange"
                 @preview='preview'
                 :accept='accept'
