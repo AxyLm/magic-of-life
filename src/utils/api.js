@@ -1,6 +1,6 @@
 let  apiconfig={
     dev:{
-      url:'http://localhost:9200'
+      url:'http://localhost:9233'
     },
   }
   const mode='dev'

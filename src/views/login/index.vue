@@ -97,6 +97,29 @@ export default {
                         }
                     ]
                 },
+                {
+                    path:'/system',
+                    route:'/system',
+                    component: 'Layout',
+                    title:'后台管理',
+                    icon:'code',
+                    children:[
+                        {
+                            path:'router',
+                            route:'/system/router',
+                            title:'路由设置',
+                            icon:'edit',
+                            component:'system/index'
+                        },
+                        {
+                            path:'role',
+                            route:'/system/role',
+                            title:'角色管理',
+                            icon:'edit',
+                            component:'system/role'
+                        },
+                    ]
+                },
             ],
             loginLoading:'',
         }
