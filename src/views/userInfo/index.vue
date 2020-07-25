@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="position:absolute;height:90%;" v-scrollBar>
         <a-card title="uaserinf" style="">
             <a slot="extra" href="#" @click="con()">more</a>
             <div style="display:flex">

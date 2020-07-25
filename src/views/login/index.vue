@@ -97,6 +97,29 @@ export default {
                         }
                     ]
                 },
+                {
+                    path:'/system',
+                    route:'/system',
+                    component: 'Layout',
+                    title:'后台管理',
+                    icon:'code',
+                    children:[
+                        {
+                            path:'router',
+                            route:'/system/router',
+                            title:'路由设置',
+                            icon:'edit',
+                            component:'system/index'
+                        },
+                        {
+                            path:'role',
+                            route:'/system/role',
+                            title:'角色管理',
+                            icon:'edit',
+                            component:'system/role'
+                        },
+                    ]
+                },
             ],
             loginLoading:'',
         }
@@ -110,21 +133,21 @@ export default {
                 if (valid) {
                     
                     console.log(this)
-                    this.$axios.post(this.$api.url + '/user/login',{
-                        username:this.userInfo.username,
-                        password:this.userInfo.password,
-                    })
-                    .then(res=>{
-                        console.log(res)
-                        if(res.code == 0){
+                    // this.$axios.post(this.$api.url + '/user/login',{
+                    //     username:this.userInfo.username,
+                    //     password:this.userInfo.password,
+                    // })
+                    // .then(res=>{
+                    //     console.log(res)
+                    //     if(res.code == 0){
                             localStorage.setItem('router',JSON.stringify(this.routerList))
                             this.$router.push('/Magic')
                             this.$message.success({ content: '登录成功', key:'loading',duration:0.5});
-                        }
-                    })
-                    .catch(err=>{
-                        console.log(err)
-                    })
+                    //     }
+                    // })
+                    // .catch(err=>{
+                    //     console.log(err)
+                    // })
                 } else {
                     console.log(valid)
                     return false;

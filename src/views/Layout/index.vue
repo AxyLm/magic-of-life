@@ -23,6 +23,7 @@
 
     <a-drawer
         placement="left"
+        :mask='false'
         :closable="false"
         :visible="mobileSilderOpen"
         @close="onClose"
@@ -41,7 +42,7 @@
         </a-button>
         <mHeader/>
       </a-layout-header>
-      <a-layout-content :style="{ margin: '24px 16px 0' }">
+      <a-layout-content :style="{ margin: '24px 16px 0' }" >
         <transition name="slide-fade" mode='out-in'>
           <router-view/>
         </transition>
