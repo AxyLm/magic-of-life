@@ -23,6 +23,7 @@
   </div>
 </template>
 <script>
+import bus from '@/utils/eventbus'
 export default {
     name:'Menu',
     data(){
@@ -53,9 +54,13 @@ export default {
       this.openMenu = [this.$route.matched[0].path]
       
       this.menuLists = global.antRouter
-      console.log(this.menuLists)
+      console.log(this.menuLists,bus)
+      bus.$on('LOGIN_INIT',  (e)=> {
+        this.menuInit()
+      })
     },
     methods:{
+
       menuInit(){
         this.menuLists = global.antRouter
       },

@@ -76,6 +76,7 @@ router.onReady(()=>{
   )
 })
 function routerGo(to, next) {
+  
   let routerList =  JSON.parse(localStorage.getItem('router'))
   getRouter = filterAsyncRouter(routerList) //过滤路由
   router.addRoutes(getRouter) //动态添加路由

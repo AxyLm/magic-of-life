@@ -14,6 +14,9 @@
   </div>
 </template>
 <script>
+
+import EventBus from '@/utils/eventbus'
+
 export default {
     name:'Login',
     data(){
@@ -127,27 +130,31 @@ export default {
     mounted(){
     },
     methods:{
+
         Login(){
             this.$message.loading({ content: 'Loading...', key:'loading' });
             this.$refs.userInfo.validate(valid => {
                 if (valid) {
                     
                     console.log(this)
-                    // this.$axios.post(this.$api.url + '/user/login',{
-                    //     username:this.userInfo.username,
-                    //     password:this.userInfo.password,
-                    // })
-                    // .then(res=>{
-                    //     console.log(res)
-                    //     if(res.code == 0){
-                            localStorage.setItem('router',JSON.stringify(this.routerList))
+                    this.$axios.post(this.$api.url + '/soulfree/login/login',{
+                        username:this.userInfo.username,
+                        password:this.userInfo.password,
+                    })
+                    .then(res=>{
+                        console.log(res)
+                        if(res.code == 0){
+                            localStorage.setItem('router',JSON.stringify(res.data.route))
                             this.$router.push('/Magic')
                             this.$message.success({ content: '登录成功', key:'loading',duration:0.5});
-                    //     }
-                    // })
-                    // .catch(err=>{
-                    //     console.log(err)
-                    // })
+                            
+                            // this.$bus('LOGIN_INIT', res.data);
+                            EventBus.$emit('LOGIN_INIT', res.data);
+                        }
+                    })
+                    .catch(err=>{
+                        console.log(err)
+                    })
                 } else {
                     console.log(valid)
                     return false;

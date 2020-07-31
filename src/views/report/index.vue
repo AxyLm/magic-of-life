@@ -23,6 +23,10 @@
 </template>
 <script>
 export default {
-    name:'report'
+    name:'report',
+    created(){
+        console.log(process.env.VUE_APP_SECRET,process.env.NODE_ENV)
+        
+    }
 }
 </script>

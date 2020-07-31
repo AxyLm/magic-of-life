@@ -10,8 +10,13 @@ import api from './utils/api'
 
 import 'ant-design-vue/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
-Vue.use(Antd);
 
+import EventBus from '@/utils/eventbus'
+
+Vue.use(Antd);
+Vue.prototype.$EventBus = EventBus
+Vue.prototype.$axios = axios
+Vue.prototype.$api = api
 const el_scrollBar = (el) =>{
   if(el._ps instanceof PerfectScrollBar) {
     el._ps.update()
@@ -40,9 +45,6 @@ Vue.directive('scrollBar',{
     }
   }
 })
-Vue.prototype.$axios = axios
-Vue.prototype.$api = api
-
 Vue.config.productionTip = false
 
 new Vue({
