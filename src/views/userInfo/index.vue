@@ -1,5 +1,5 @@
 <template>
-    <div style="position:absolute;height:90%;" v-scrollBar>
+    <div style="height:90%;" ><!--position:absolute; v-scrollBar> -->
         <a-card title="uaserinf" style="">
             <a slot="extra" href="#" @click="con()">more</a>
             <div style="display:flex">
@@ -16,50 +16,39 @@
                 <p>Solve initial network problems 2</p>
                 <p>Solve initial network problems 3 2015-09-01</p>
                 </a-timeline-item>
-                <a-timeline-item>
-                <p>Technical testing 1</p>
-                <p>Technical testing 2</p>
-                <p>Technical testing 3 2015-09-01</p>
-                </a-timeline-item>
-                <a-timeline-item color="gray">
-                <p>Technical testing 1</p>
-                <p>Technical testing 2</p>
-                <p>Technical testing 3 2015-09-01</p>
-                </a-timeline-item>
-                <a-timeline-item color="gray">
-                <p>Technical testing 1</p>
-                <p>Technical testing 2</p>
-                <p>Technical testing 3 2015-09-01</p>
-                </a-timeline-item>
             </a-timeline>
              <a-timeline mode="alternate">
-                <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
-                <a-timeline-item color="green">
-                Solve initial network problems 2015-09-01
-                </a-timeline-item>
-                <a-timeline-item>
-                <a-icon slot="dot" type="clock-circle-o" style="font-size: 16px;" />
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
-                laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
-                beatae vitae dicta sunt explicabo.
-                </a-timeline-item>
-                <a-timeline-item color="red">
-                Network problems being solved 2015-09-01
-                </a-timeline-item>
-                <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
-                <a-timeline-item>
-                <a-icon slot="dot" type="clock-circle-o" style="font-size: 16px;" />
-                Technical testing 2015-09-01
-                </a-timeline-item>
+                <router-link to='/user/info/test'>
+                    <a-button>go</a-button>
+                </router-link>
+                
             </a-timeline>
             </div>
-
         </a-card>
+        <router-view/>
     </div>
 </template>
 <script>
 export default {
     name:'userinfo',
+    created(){
+        [
+            {"title":"首页","route":"/Magic","path":"/Magic","icon":"unordered-list","component":"Layout","children":[{"title":"统计报表","route":"/Magic/report","path":"report","icon":"area-chart","component":"report/index","children":null},{"title":"统计报表2","route":"/Magic/assine","path":"assine","icon":"appstore","component":"assine/index","children":null}]},
+            {"title":"内容管理","route":"/cloud","path":"/cloud","icon":"cloud","component":"Layout","children":[{"title":"素材管理","route":"/cloud/media","path":"Media","icon":"file-image","component":"cloud/media/index","children":null},{"title":"文件管理","route":"/cloud/files","path":"Files","icon":"file","component":"cloud/files/index","children":null}]},
+            {"title":"用户信息","route":"/user","path":"/user","icon":"user","component":"Layout","children":
+            [{"title":"个人信息","route":"/user/info","path":"info","icon":"edit","component":"userInfo/index",
+            "children":[{
+                "path": 'test',
+                "route":'/user/info/test',
+                "component": "userInfo/test/index",
+                "title":'首页',
+                "icon":'unordered-list',
+            }]
+            
+            }]
+        }
+        ]
+    },
     methods:{
         con(){
             console.log(global)

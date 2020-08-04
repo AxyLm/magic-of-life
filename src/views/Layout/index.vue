@@ -23,7 +23,7 @@
 
     <a-drawer
         placement="left"
-        :mask='false'
+        :mask='true'
         :closable="false"
         :visible="mobileSilderOpen"
         @close="onClose"
@@ -35,19 +35,19 @@
         </div>
          <menus theme='light'/>
       </a-drawer>
-    <a-layout>
+    <a-layout style="overflow:hidden">
       <a-layout-header :style="{ background: '#fff', padding: 0 ,display:'flex'}" >
         <a-button type="primary" style="margin-bottom: 16px" @click="toggleCollapsed">
           <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" />
         </a-button>
         <mHeader/>
       </a-layout-header>
-      <a-layout-content :style="{ margin: '24px 16px 0' }" >
+      <a-layout-content class="main-content">
         <transition name="slide-fade" mode='out-in'>
-          <router-view/>
+          <rView/>
         </transition>
       </a-layout-content>
-      <a-layout-footer style="textAlign: center">
+      <a-layout-footer style="text-align: center;height:60px;padding:0 !important;" v-if="PRO_Footer">
         <template v-if="!mobileSilder">
           <div>
             <p>Copyright © 2020 浮生若梦 All Rights Reserved.</p>
@@ -69,15 +69,25 @@
 <script>
 import menus from './components/Menu'
 import mHeader from './components/Header'
+import rView from './components/Layout'
 export default {
     name:'Magic',
-    components:{menus,mHeader},
+    components:{menus,mHeader,rView},
     data(){
         return{
             collapsed:false,
             mobileSilder:false,
             mobileSilderOpen:false
         }
+    },
+    computed:{
+      PRO_Footer(){
+        if(process.env.NODE_ENV == 'production'){
+          return true
+        }else{
+          return false
+        }
+      }
     },
     mounted(){
         window.onresize = ((e)=>{
@@ -128,5 +138,29 @@ export default {
 }
 .slide-fade-enter, .slide-fade-leave-to{
   opacity: 0;
+}
+.main-content{
+  margin: 20px 16px;
+  overflow-x:hidden;
+  overflow-y:auto;
+  height:calc( 100vh - 160px);
+}
+
+.main-content::-webkit-scrollbar {
+  // display: none;
+} 
+/*滚动条整体部分,必须要设置*/
+.main-content::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+/*滚动条的轨道*/
+.main-content::-webkit-scrollbar-track{
+  border-radius: 8px;
+}
+/*滚动条的滑块按钮*/
+.main-content::-webkit-scrollbar-thumb{
+  border-radius: 8px;
+  background-color: #dddee0;
 }
 </style>

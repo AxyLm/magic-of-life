@@ -8,7 +8,12 @@
                 <a-input v-model="userInfo.password" placeholder="密码" clearable type="password" :show-password='true'/>
             </a-form-model-item>
             <a-form-model-item>
-                <a-button type='submit' @click="Login()">sumbit</a-button>
+                <a-button type='submit' @click="Login()">
+                    <a-spin :spinning='loginLoading'>
+                        <a-icon slot="indicator" type="loading" style="font-size: 24px" />
+                    </a-spin>
+                    sumbit
+                </a-button>
             </a-form-model-item>
         </a-form-model>
   </div>
@@ -124,32 +129,31 @@ export default {
                     ]
                 },
             ],
-            loginLoading:'',
+            loginLoading:false,
         }
     },
-    mounted(){
+    watch:{
+        $route(){
+            location.reload()
+        }
     },
     methods:{
-
         Login(){
-            this.$message.loading({ content: 'Loading...', key:'loading' });
             this.$refs.userInfo.validate(valid => {
                 if (valid) {
-                    
-                    console.log(this)
+                    this.loginLoading =  true
                     this.$axios.post(this.$api.url + '/soulfree/login/login',{
                         username:this.userInfo.username,
                         password:this.userInfo.password,
                     })
                     .then(res=>{
-                        console.log(res)
                         if(res.code == 0){
+                            this.loginLoading = false
+                            this.$store.state.route = res.data.route
                             localStorage.setItem('router',JSON.stringify(res.data.route))
-                            this.$router.push('/Magic')
-                            this.$message.success({ content: '登录成功', key:'loading',duration:0.5});
-                            
-                            // this.$bus('LOGIN_INIT', res.data);
-                            EventBus.$emit('LOGIN_INIT', res.data);
+                            this.$router.push(res.data.route[0].path)
+                            this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
+                            this.$EventBus.$emit('LOGIN_INIT', res.data);
                         }
                     })
                     .catch(err=>{

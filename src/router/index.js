@@ -38,19 +38,18 @@ let router = new VueRouter({
   scrollBehavior: () => ({ y: 0 })
 })
 
-
+const whiteList = ['/Login','/Error','/Error/404'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
 
   console.log( from.path + '--->' + to.path)
   if(to.path == '/Login'){
     next()
-    return
+    return // 避免跳转失败
   }
   global.openMenu = to.path
   if (!validMenu(to)) {
     next({ path: '/Error/404', query: { from: from.path }})
-    return
   }
   if(!getRouter){
     routerGo(to, next)
@@ -90,8 +89,9 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
       if (route.component) {
         if (route.component === 'Layout') {//Layout组件特殊处理
           route.component = Layout
-          route.redirect =route.path +'/'+ route.children[0].path
-
+          if( route.children && route.children.length >= 1 ){  //避免无子菜单时的生成失败
+            route.redirect =route.path +'/'+ route.children[0].path
+          }
         } else {
           route.component = _import(route.component)
         }
@@ -120,8 +120,7 @@ export function validMenu(to) {
         return true
       }
     }
-    console.log(menus,to)
-    console.log('Not Find to Page Redirect to 404 page')
+    console.info('Not Find to Page Redirect to 404 page',to)
     return false
   }
   return true
