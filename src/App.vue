@@ -28,4 +28,16 @@ export default {
     -ms-user-select: none;
     user-select: none;
 }
+
+.slide-fade-enter-active {
+  transition: all .33s ease-in;
+
+}
+.slide-fade-leave-active {
+  transition: all .33s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transform: translateX(100px);
+}
+.slide-fade-enter, .slide-fade-leave-to{
+  opacity: 0;
+}
 </style>

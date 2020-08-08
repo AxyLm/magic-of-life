@@ -1,55 +1,72 @@
 <template>
     <div style="height:90%;width:100%">
-        <a-row style="background:#fff">
-            <a-col :span='8'>
-                <a-card title="router" style="width:100%;height:auto" >
+        <a-row style="background:#fff;height:100%">
+            <a-col :span='10' :xs="24" :xl='10' >
+                <a-card title="路由管理" style="width:100%;height:auto;min-height:300px" >
                     <a-spin tip="Loading..." :spinning='treeLoading'>
                         <a-tree blockNode draggable
                             :tree-data="treeData"
                             :replaceFields='replaceFields'
+                            :autoExpandParent='true'
+                            :defaultExpandAll='true'
                             @select='selTree'
                             @dragstart='dragstart'
                             @dragend='dragend'
-                            @drop='onDrop'
-                            :defaultSelectedKeys='[treeData[0].route]'>
-                            <span slot-scope="{ slots }" slot="slots">
-                                123
-                            </span>
+                            @drop='onDrop'>
+                            <div slot-scope="item" slot="change" style="widht:100%">
+                                <span >
+                                    {{item.title}}
+                                </span>
+                                <span style="float:right">
+                                    <a-button size='small' type="link" @click.prevent.stop='change(item,"add")'>添加</a-button>
+                                    <a-popconfirm title="确定删除么?" @confirm='change(item,"del")'>
+                                        <a-icon slot="icon" type="delete" style="color: red" />
+                                        <a-button size='small' type="link">删除</a-button>
+                                    </a-popconfirm>
+                                </span>
+                            </div>
                         </a-tree>
                     </a-spin>
                 </a-card>
             </a-col>
-            <a-col :span='16'>
+            <a-col :span='14' :xs="24" :xl='14'>
                 <a-card>
-                    <a-form layout='vertical' :label-col="labelCol" :wrapper-col="wrapperCol" :form='routerInfo'>
-                        <a-form-item label='名称' :labelCol='{span:3}'>
+                    <a-spin tip='Loading' :spinning='formLoading'>
+                    <a-form layout='horizontal' :label-col="labelCol" :wrapper-col="wrapperCol" :form='routerInfo'>
+                        <transition-group name="slide-fade" mode='out-in'>
+                        <a-form-item label='父级' :labelCol='{span:3}' v-if="addParentShow" key="0">
+                            <a-input v-model="addParent.title" :disabled="true"/>
+                        </a-form-item>
+                        <a-form-item label='名称' :labelCol='{span:3}' key="1">
                             <a-input v-model="routerInfo.title"/>
                         </a-form-item>
-                        <a-form-item label='路径' :labelCol='{span:3}' props='title'>
+                        <a-form-item label='路径' :labelCol='{span:3}' props='title' key="2">
                             <a-input v-model="routerInfo.route"/>
                         </a-form-item>
-                        <a-form-item label='图标' :labelCol='{span:3}'>
+                        <a-form-item label='图标' :labelCol='{span:3}' key="3">
                             <a-input v-model="routerInfo.icon">
-                                <a-icon slot="prefix" :type="routerInfo.icon" />
+                                <a-icon slot="suffix" :type="routerInfo.icon" />
                             </a-input>
                         </a-form-item>
-                        <a-form-item label='组件' :labelCol='{span:3}'>
+                        <a-form-item label='组件' :labelCol='{span:3}' key="4">
                             <a-input v-model="routerInfo.component"/>
                         </a-form-item>
-                        <a-form-item label='链接' :labelCol='{span:3}'>
+                        <a-form-item label='链接' :labelCol='{span:3}' key="5">
                             <a-input v-model="routerInfo.path"/>
                         </a-form-item>
-                        <a-form-item label='权限' :labelCol='{span:3}'>
-                            <a-select :default-value="routerInfo.visibleRoles" style="width: 200px" mode="multiple">
-                                <a-select-option v-for="(i,index) in allroles" :key="index">
-                                    {{i}}
+                        <a-form-item label='权限' :labelCol='{span:3}' key="6">
+                            <a-select :value="routerInfo.visibleRoles"  mode="multiple" :dropdownMatchSelectWidth='true' :showArrow='true'> 
+                                <a-select-option v-for="(item,index) in allroles" :key="index+item">
+                                    {{item}}
                                 </a-select-option>
                             </a-select>
                         </a-form-item>
-                        <a-form-item>
-                            <a-button @click="submit">提交</a-button>
+                        <a-form-item key="7" style="text-align:center">
+                            <a-button @click="submit"  type="primary">提交</a-button>
                         </a-form-item>
+                        </transition-group>
                     </a-form>
+                    </a-spin>
                 </a-card>
             </a-col>
         </a-row>
@@ -61,26 +78,25 @@ export default {
     data(){
         return{
             treeData:[],
+            addParent:{},
+            
+            addParentShow:false,
             treeLoading:false,
+            formLoading:false,
             routerInfo:{
-                "title":"路由设置",
-                "route":"/system/router",
-                "path":"router",
-                "icon":"edit",
-                "component":"system/index",
+                "title":"",
+                "route":"",
+                "path":"",
+                "icon":"plus",
+                "component":"",
                 "parent":null,
-                "visibleRoles":["PRO_SF"]
+                "visibleRoles":[]
             },
             allroles:[''],
             replaceFields:{children:'children', title:'title', key:'node' },
-            labelCol: {
-                xs: { span: 24 },
-                sm: { span: 8 },
-            },
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 16 },
-            },
+            labelCol: { span: 4 },
+            wrapperCol: { span: 20 },
+            changType:'',
         }
     },
     created(){
@@ -92,11 +108,34 @@ export default {
         
     },
     methods:{
+        change(item,type){
+            this.addParentShow = false
+            console.log(item,type)
+            if(type == 'add'){
+                    this.addParentShow = true
+                    this.addParent = {title:item.title,node:item.slots}
+                    // item.children.push({title:'新增节点',route:'/',scopedSlots:{title:'change'}})
+            }else if(type == 'del'){
+                this.$axios.post(this.$api.url + '/users/delrouter',{
+                    routerId:item.slots.id
+                })
+                .then((res)=>{
+                    this.$message.success({ content: item.title+'   删除成功',duration:2.5});
+                    this.initTree()
+                })
+            }else{
+
+            }
+        },
         submit(){
+            if(this.addParentShow){
+                this.routerInfo.parent = this.addParent.node.id
+            }
             this.$axios.post(this.$api.url +'/users/addroute',this.routerInfo)
             .then((res)=>{
                 if(res.code == 0){
                     this.$message.success({ content: '添加成功',duration:2.5});
+                    this.defaultExpandedKeys = [res.data.route]
                     this.initTree()
                 }else{
                     throw res.msg
@@ -147,8 +186,41 @@ export default {
             console.log(event.dragNode.eventKey ,'进入',event.node.eventKey)
         },
         selTree(selectedKeys, e){
-            console.log(selectedKeys,e.node.title)
+            this.formLoading = true
+            this.$axios.post(this.$api.url + '/users/queryRouter',{
+                "node":e.node.dataRef.slots
+            })
+            .then((res)=>{
+                if(res.code == 0){
+                    this.changType == 'query'
+                    this.routerInfo = res.data
+                    if(res.data.parent){
+                        this.addParent = res.data.parent
+                        this.addParentShow = true
+                    }else{
+                        this.addParentShow = false
+                    }
+
+                    console.log(this.routerInfo)
+                }
+                this.formLoading = false
+            }).catch(()=>{
+                this.formLoading = false
+            })
+            console.log(selectedKeys,e)
         }
     }
 }
 </script>
+<style lang="scss" scoped>
+.slide-fade-enter-active {
+  transition: all .33s ease-in;
+}
+.slide-fade-leave-active {
+  transition: all .33s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transform: translateX(100px);
+}
+.slide-fade-enter, .slide-fade-leave-to{
+  opacity: 0;
+}
+</style>

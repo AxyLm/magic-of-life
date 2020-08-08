@@ -1,18 +1,17 @@
 <template>
   <div id="m-header">
-    <a-breadcrumb class="textNoSel">
-      <a-breadcrumb-item href>
-        <a-icon type="home" />
+
+  <a-breadcrumb>
+
+    <!-- <transition-group name="slide-fade" mode='out-in' slot="itemRender"> -->
+      <a-breadcrumb-item href="item.path" v-for="(item,index) in levelList" :key="item+index">
+        {{item.name}}
       </a-breadcrumb-item>
-      <a-breadcrumb-item href>
-        <a-icon type="user" />
-        <span class="text">Application List</span>
-      </a-breadcrumb-item>
-      <a-breadcrumb-item class="textNoSel">Application</a-breadcrumb-item>
-    </a-breadcrumb>
-    <a-dropdown>
+    <!-- </transition-group>/ -->
+  </a-breadcrumb>
+  <a-dropdown>
       <a-avatar size="large" src="@/static/belief.jpg">
-        <img src="@/static/belief.jpg" alt srcset slot="icon" />
+        <!-- <img src="@/static/belief.jpg" alt srcset slot="icon" /> -->
       </a-avatar>
 
       <a-menu slot="overlay">
@@ -29,9 +28,29 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      basePath:'',
+      routes:[],
+      levelList:null,
+    };
+  },
+  watch:{
+    $route(val){
+      this.getBreadcrumb()
+      console.log(val)
+    }
+  },
+  created(){
+    this.getBreadcrumb()
+  },
+  mounted(){
+    this.routes = global.antRouter
+    console.log(this.$router)
   },
   methods: {
+    getBreadcrumb() {
+      this.levelList = this.$route.matched
+    },
     signOut() {
       global.antRouter = [];
       localStorage.removeItem("router");

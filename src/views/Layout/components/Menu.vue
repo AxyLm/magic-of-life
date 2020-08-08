@@ -12,7 +12,7 @@
 
         <a-menu-item  v-for="(sub) in item.children" :key='sub.route'>
             <router-link :to="sub.route" class="textNoSel">
-              <a-icon :type="sub.icon" />
+              <!-- <a-icon :type="sub.icon" /> -->
               <span class="nav-text">
                 {{sub.title}}
               </span>

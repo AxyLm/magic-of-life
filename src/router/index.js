@@ -95,6 +95,7 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
         } else {
           route.component = _import(route.component)
         }
+        route.name = route.title
       }
       menus.push(route)
     } catch (e) {

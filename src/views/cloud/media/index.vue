@@ -8,13 +8,22 @@
                 :infinite-scroll-disabled="busy"
                 :infinite-scroll-distance="1">
                 <a-list :data-source="fileLists" :grid='grids'>
-                    <a-list-item slot="renderItem" slot-scope="item" style="padding:10px;overflow:hidden;" ref='listItem' >
+                    <!-- <transition-group name="slide-fade" mode='out-in'> -->
+                    <a-list-item slot="renderItem" slot-scope="item" style="padding:10px;overflow:hidden;" ref='listItem' :key='item'>
                         <div  class="imgitem" :style='"background-image: url(http://localhost:9200/public/image/"+item.path+");"/*height:"+(item.ratio>1.5?"184px":"400px")*/'/>
                     </a-list-item>
+                    <!-- </transition-group> -->
                     <div v-if="loading && !busy" class="demo-loading-container">
                         <a-spin />
                     </div>
                 </a-list>
+                <!-- <a-row>
+                    <transition-group name="slide-fade" mode='out-in'>
+                        <a-col v-for="(item,index) in fileLists" :key="index" :span='4' :xs='2' :sm='4' :xl='8'>
+                            <div  class="imgitem" :style='"background-image: url(http://localhost:9200/public/image/"+item.path+");"/*height:"+(item.ratio>1.5?"184px":"400px")*/'/>
+                        </a-col>
+                    </transition-group>
+                </a-row> -->
             </div>
         </a-card>
         <a-modal v-model="addModal" title="添加" on-ok="handleOk" :destroyOnClose='true'>
@@ -99,7 +108,7 @@ export default {
             this.$message.error('错误的文件类型',1);
         },
         initList(){
-            this.$axios.post(this.$api.url + '/xuanque/getInfoByPage',{
+            this.$axios.post('http://localhost:9200' + '/xuanque/getInfoByPage',{
                 pageSize:this.pageSize,
                 page:this.page
             })
@@ -116,7 +125,7 @@ export default {
         handleInfiniteOnLoad() {
             if(this.loading){
                 this.page++
-                this.$axios.post(this.$api.url + '/xuanque/getInfoByPage',{
+                this.$axios.post('http://localhost:9200' + '/xuanque/getInfoByPage',{
                     pageSize:this.pageSize,
                     page:this.page
                 })

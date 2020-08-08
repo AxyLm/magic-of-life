@@ -1,43 +1,38 @@
 <template>
   <a-layout id="components-layout-demo-responsive">
     <transition>
-    
-    <a-layout-sider
-      breakpoint="lg"
-      collapsed-width="0"
-      @collapse="onCollapse"
-      @breakpoint="onBreakpoint"
-      :collapsed='collapsed'
-      :trigger='null'
-      v-show="!mobileSilder"
-    >
-
-    
-      <div class="logo" style="overflow:hidden">
-        <img src="https://gw.alipayobjects.com/zos/alicdn/hzEndUVEx/Layout.svg" alt="" srcset="">
-      </div>
-      <menus theme='dark'/>
-      
-    </a-layout-sider>
-    </transition>
-
-    <a-drawer
-        placement="left"
-        :mask='true'
-        :closable="false"
-        :visible="mobileSilderOpen"
-        @close="onClose"
-        v-show='mobileSilder'
-        :bodyStyle='{padding:"20px 0 20px 10px"}'
+      <a-layout-sider
+        breakpoint="lg"
+        collapsed-width="0"
+        @collapse="onCollapse"
+        @breakpoint="onBreakpoint"
+        :collapsed='collapsed'
+        :trigger='null'
+        v-show="!mobileSilder"
       >
-        <div class="logo" style="overflow:hidden;maxHeight:40px" slot="title">
+        <div class="logo" style="overflow:hidden">
           <img src="https://gw.alipayobjects.com/zos/alicdn/hzEndUVEx/Layout.svg" alt="" srcset="">
         </div>
-         <menus theme='light'/>
-      </a-drawer>
+        <menus theme='dark'/>
+      </a-layout-sider>
+    </transition>
+    <a-drawer
+      placement="left"
+      :mask='true'
+      :closable="false"
+      :visible="mobileSilderOpen"
+      @close="onClose"
+      v-show='mobileSilder'
+      :bodyStyle='{padding:"20px 0 20px 10px"}'
+    >
+      <div class="logo" style="overflow:hidden;maxHeight:40px" slot="title">
+        <img src="https://gw.alipayobjects.com/zos/alicdn/hzEndUVEx/Layout.svg" alt="" srcset="">
+      </div>
+      <menus theme='light'/>
+    </a-drawer>
     <a-layout style="overflow:hidden">
       <a-layout-header :style="{ background: '#fff', padding: 0 ,display:'flex'}" >
-        <a-button type="primary" style="margin-bottom: 16px" @click="toggleCollapsed">
+        <a-button type="primary" style="margin-top: 16px" @click="toggleCollapsed">
           <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" />
         </a-button>
         <mHeader/>
