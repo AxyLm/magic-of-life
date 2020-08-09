@@ -8,11 +8,11 @@
                 :infinite-scroll-disabled="busy"
                 :infinite-scroll-distance="1">
                 <a-list :data-source="fileLists" :grid='grids'>
-                    <!-- <transition-group name="slide-fade" mode='out-in'> -->
-                    <a-list-item slot="renderItem" slot-scope="item" style="padding:10px;overflow:hidden;" ref='listItem' :key='item'>
+                    <transition-group name="slide-fade" mode='out-in'  slot="renderItem"slot-scope="item" >
+                    <a-list-item  style="padding:10px;overflow:hidden;" ref='listItem' :key='item'>
                         <div  class="imgitem" :style='"background-image: url(http://localhost:9200/public/image/"+item.path+");"/*height:"+(item.ratio>1.5?"184px":"400px")*/'/>
                     </a-list-item>
-                    <!-- </transition-group> -->
+                    </transition-group>
                     <div v-if="loading && !busy" class="demo-loading-container">
                         <a-spin />
                     </div>
@@ -81,7 +81,7 @@ export default {
         }
     },
     mounted() {
-        this.scrollReveal.reveal('.reveal-top', {
+        this.scrollReveal.reveal('.reveal-top', {     
             // 动画的时长
             duration: 2000,
             // 延迟时间

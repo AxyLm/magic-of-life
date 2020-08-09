@@ -148,14 +148,16 @@ export default {
                     })
                     .then(res=>{
                         if(res.code == 0){
-                            this.loginLoading = false
                             this.$store.state.route = res.data.route
                             localStorage.setItem('router',JSON.stringify(res.data.route))
                             localStorage.setItem('userInfo',JSON.stringify(res.data))
                             this.$router.push(res.data.route[0].path)
                             this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
                             this.$EventBus.$emit('LOGIN_INIT', res.data);
+                        }else{
+                            this.$message.error({ content: res.msg, key:'loading',duration:1.5});
                         }
+                        this.loginLoading = false
                     })
                     .catch(err=>{
                         console.log(err)

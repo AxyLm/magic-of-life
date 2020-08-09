@@ -1,8 +1,8 @@
 <template>
     <div style="height:90%;width:100%">
         <a-row style="background:#fff;height:100%">
-            <a-col :span='10' :xs="24" :xl='10' >
                 <a-card title="路由管理" style="width:100%;height:auto;min-height:300px" >
+            <a-col :span='10' :xs="24" :xl='10' >
                     <a-spin tip="Loading..." :spinning='treeLoading'>
                         <a-tree blockNode draggable
                             :tree-data="treeData"
@@ -27,10 +27,8 @@
                             </div>
                         </a-tree>
                     </a-spin>
-                </a-card>
             </a-col>
             <a-col :span='14' :xs="24" :xl='14'>
-                <a-card>
                     <a-spin tip='Loading' :spinning='formLoading'>
                     <a-form layout='horizontal' :label-col="labelCol" :wrapper-col="wrapperCol" :form='routerInfo'>
                         <transition-group name="slide-fade" mode='out-in'>
@@ -54,8 +52,11 @@
                         <a-form-item label='链接' :labelCol='{span:3}' key="5">
                             <a-input v-model="routerInfo.path"/>
                         </a-form-item>
+                         <a-form-item label='序列' :labelCol='{span:3}' key="sequence">
+                            <a-input v-model="routerInfo.sequence"/>
+                        </a-form-item>
                         <a-form-item label='权限' :labelCol='{span:3}' key="6">
-                            <a-select :value="routerInfo.visibleRoles"  mode="multiple" :dropdownMatchSelectWidth='true' :showArrow='true'> 
+                            <a-select :value="routerInfo.visibleRoles" @change='authChange' mode="multiple" :dropdownMatchSelectWidth='true' :showArrow='true'> 
                                 <a-select-option v-for="(item,index) in allroles" :key="index+item">
                                     {{item}}
                                 </a-select-option>
@@ -67,8 +68,8 @@
                         </transition-group>
                     </a-form>
                     </a-spin>
-                </a-card>
             </a-col>
+                </a-card>
         </a-row>
     </div>
 </template>
@@ -79,7 +80,6 @@ export default {
         return{
             treeData:[],
             addParent:{},
-            
             addParentShow:false,
             treeLoading:false,
             formLoading:false,
@@ -90,6 +90,7 @@ export default {
                 "icon":"plus",
                 "component":"",
                 "parent":null,
+                "sequence":'',
                 "visibleRoles":[]
             },
             allroles:[''],
@@ -108,12 +109,16 @@ export default {
         
     },
     methods:{
+        authChange(e){
+            this.routerInfo.visibleRoles = e
+        },
         change(item,type){
             this.addParentShow = false
             console.log(item,type)
             if(type == 'add'){
                     this.addParentShow = true
-                    this.addParent = {title:item.title,node:item.slots}
+                    this.changType = 'add'
+                    this.addParent = {title:item.title,...item.slots}
                     // item.children.push({title:'新增节点',route:'/',scopedSlots:{title:'change'}})
             }else if(type == 'del'){
                 this.$axios.post(this.$api.url + '/users/delrouter',{
@@ -129,12 +134,18 @@ export default {
         },
         submit(){
             if(this.addParentShow){
-                this.routerInfo.parent = this.addParent.node.id
+                this.routerInfo.parent = this.addParent.id
             }
-            this.$axios.post(this.$api.url +'/users/addroute',this.routerInfo)
+            let url = ''
+            if(this.changType == 'query'){
+                url = '/users/updateRoute'
+            }else{
+                url = '/users/addroute'
+            }
+            this.$axios.post(this.$api.url + url,this.routerInfo)
             .then((res)=>{
                 if(res.code == 0){
-                    this.$message.success({ content: '添加成功',duration:2.5});
+                    this.$message.success({ content: '成功',duration:2.5});
                     this.defaultExpandedKeys = [res.data.route]
                     this.initTree()
                 }else{
@@ -192,7 +203,7 @@ export default {
             })
             .then((res)=>{
                 if(res.code == 0){
-                    this.changType == 'query'
+                    this.changType = 'query'
                     this.routerInfo = res.data
                     if(res.data.parent){
                         this.addParent = res.data.parent
