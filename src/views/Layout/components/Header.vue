@@ -10,8 +10,8 @@
     <!-- </transition-group>/ -->
   </a-breadcrumb>
   <a-dropdown>
-      <a-avatar size="large" src="@/static/belief.jpg">
-        <!-- <img src="@/static/belief.jpg" alt srcset slot="icon" /> -->
+      <a-avatar size="large" :src="queryUser().avatar">
+        <img src="@/static/belief.jpg" alt srcset slot="icon" />
       </a-avatar>
 
       <a-menu slot="overlay">
@@ -48,6 +48,9 @@ export default {
     console.log(this.$router)
   },
   methods: {
+    queryUser(){
+      return JSON.parse(localStorage.getItem('userInfo'))
+    },
     getBreadcrumb() {
       this.levelList = this.$route.matched
     },
@@ -55,6 +58,7 @@ export default {
       global.antRouter = [];
       localStorage.removeItem("router");
       this.$router.push("/Login");
+      window.location.reload()
     },
   },
 };

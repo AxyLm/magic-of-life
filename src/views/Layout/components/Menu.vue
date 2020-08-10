@@ -41,7 +41,7 @@ export default {
     },
     watch:{
       $router(){
-        this.menuInit()
+        // this.menuInit()
       },
       $route(){
         this.selMenu = [this.$route.path]
@@ -55,9 +55,13 @@ export default {
     mounted(){
       this.menuInit()
     },
+    activated(){
+      this.menuInit()
+    },
     methods:{
       menuInit(){
-        this.menuLists = global.antRouter
+        console.log('menu init',this.$store.state.userInfo)
+        this.menuLists = JSON.parse( localStorage.getItem('router') )
       },
     }
 }

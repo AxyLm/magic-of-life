@@ -1,26 +1,25 @@
 <template>
- 
- <div>magic</div>
+  <div>magic</div>
 </template>
 <script>
 export default {
-    name:'Magic',
-    data(){
-        return{
-            
-        }
+  name:'Magic',
+  data(){
+      return{
+          
+      }
+  },
+  mounted(){
+      
+  },
+  methods:{
+    onCollapse(collapsed, type) {
+      console.log(collapsed, type);
     },
-    mounted(){
-        
+    onBreakpoint(broken) {
+      console.log(broken);
     },
-    methods:{
-      onCollapse(collapsed, type) {
-        console.log(collapsed, type);
-      },
-      onBreakpoint(broken) {
-        console.log(broken);
-      },
-    }
+  }
 }
 </script>
 <style lang="scss" scoped>

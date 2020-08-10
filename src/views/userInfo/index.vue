@@ -1,34 +1,16 @@
 <template>
     <div style="height:90%;" ><!--position:absolute; v-scrollBar> -->
-        <a-card title="uaserinf" style="">
-            <a slot="extra" href="#" @click="con()">more</a>
-            <div style="display:flex">
+        <a-card style="height:100%"  :bodyStyle="{'height':'100%'}">
+            <a-row style="height:100%" >
+                <a-col :span='6'>
+                    <a-avatar size="large" :src="queryUser().avatar"></a-avatar>
+                </a-col>
+                <a-divider type="vertical" style="height:100%"/>
+                <a-col :span='18'>
 
-              <a-timeline>
-                <a-timeline-item color="green">
-                Create a services site 2015-09-01
-                </a-timeline-item>
-                <a-timeline-item color="green">
-                Create a services site 2015-09-01
-                </a-timeline-item>
-                <a-timeline-item color="red">
-                <p>Solve initial network problems 1</p>
-                <p>Solve initial network problems 2</p>
-                <p>Solve initial network problems 3 2015-09-01</p>
-                </a-timeline-item>
-            </a-timeline>
-             <a-timeline mode="alternate">
-                <!-- <router-link to='/user/info/test'> -->
-                    <a-button @click="addtag">go</a-button>
-                    <a-button @click="shuffle">shuffle</a-button>
-                <!-- </router-link> -->
-                    <transition-group name="slide-fade" mode='out-in'>
-                        <a-tag color="pink" v-for="item in taglist" :key="item">{{item}}</a-tag>
-                    </transition-group>
-            </a-timeline>
-            </div>
+                </a-col>
+            </a-row>
         </a-card>
-        <router-view/>
     </div>
 </template>
 <script>
@@ -58,6 +40,9 @@ export default {
         ]
     },
     methods:{
+        queryUser(){
+            return JSON.parse(localStorage.getItem('userInfo'))
+        },
         shuffle(){
             for (let i = 1; i < this.taglist.length; i++){
                 var random = Math.floor(Math.random() * (i + 1));

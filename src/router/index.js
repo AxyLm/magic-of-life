@@ -41,9 +41,7 @@ let router = new VueRouter({
 const whiteList = ['/Login','/Error','/Error/404'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
-
-  console.log( from.path + '--->' + to.path)
-  if(to.path == '/Login'){
+  if( whiteList.indexOf(to.path) > -1 ){
     next()
     return // 避免跳转失败
   }
@@ -83,7 +81,6 @@ function routerGo(to, next) {
   next({ ...to, replace: true })
 }
 export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路由字符串，转换为组件对象
-  console.log(asyncRouterMap)
   const accessedRouters = asyncRouterMap.filter(route => {
     try {
       if (route.component) {
@@ -99,7 +96,6 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
       }
       menus.push(route)
     } catch (e) {
-      console.error(e)
       route.component = _import('404')
     }
     if (route.children && route.children.length) {

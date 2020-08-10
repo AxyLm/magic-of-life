@@ -1,21 +1,29 @@
 <template>
   <div id="Login">
-        <a-form-model ref='userInfo' :rules="rules" :model="userInfo">
-            <a-form-model-item ref="us" prop="username">
+      <a-card :hoverable='true'>
+          <img
+      slot="cover"
+      alt="example"
+      src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+    />
+        <a-form-model ref='userInfo' 
+            :rules="rules" :model="userInfo" style="width:400px" layout='horizontal' 
+            :wrapper-col="wrapperCol" 
+            :label-col='labelCol'
+            >
+            <a-form-model-item ref="us" prop="username" label='用户名'>
                 <a-input v-model="userInfo.username" focus placeholder="用户名" clearable type='text'/>
             </a-form-model-item>
-            <a-form-model-item ref="ps" prop="password">
+            <a-form-model-item ref="ps" prop="password" label='密码'>
                 <a-input v-model="userInfo.password" placeholder="密码" clearable type="password" :show-password='true'/>
             </a-form-model-item>
-            <a-form-model-item>
-                <a-button type='submit' @click="Login()">
-                    <a-spin :spinning='loginLoading'>
-                        <a-icon slot="indicator" type="loading" style="font-size: 24px" />
-                    </a-spin>
-                    sumbit
+            <a-form-model-item  :wrapper-col='{span:24}'>
+                <a-button type='submit' @click="Login()" :loading='loginLoading' block>
+                    登录
                 </a-button>
             </a-form-model-item>
         </a-form-model>
+      </a-card>
   </div>
 </template>
 <script>
@@ -26,20 +34,22 @@ export default {
     name:'Login',
     data(){
         return{
+            labelCol: { span: 6 },
+            wrapperCol: { span: 18 },
             userInfo:{
                 username:'',
                 password:'',
             },
             rules:{
-                userName:[
+                username:[
                     { required:true,message: '用户名不能为空', trigger: ['change','blur'] },
-                    { min: 3, message: '最少输入三个字符', trigger: ['change','blur'] },
-                    { max: 12, message: '超出最大范围', trigger: ['change','blur'] }
+                    { min: 6, message: '用户名最少输入六位', trigger: ['change','blur'] },
+                    { max: 16, message: '超出最大范围', trigger: ['change','blur'] }
                 ],
-                passWord:[
+                password:[
                     {required:true,message: '密码不能为空', trigger: ['change','blur']},
-                    { min: 3, message: '密码最少三位', trigger: ['change','blur'] },
-                    { max: 12, message: '超出最大范围', trigger: ['change','blur'] }
+                    { min: 6, message: '密码最少三位', trigger: ['change','blur'] },
+                    { max: 16, message: '超出最大范围', trigger: ['change','blur'] }
                 ]
             },
             routerList:[
@@ -132,11 +142,6 @@ export default {
             loginLoading:false,
         }
     },
-    watch:{
-        $route(){
-            location.reload()
-        }
-    },
     methods:{
         Login(){
             this.$refs.userInfo.validate(valid => {
@@ -148,33 +153,30 @@ export default {
                     })
                     .then(res=>{
                         if(res.code == 0){
-                            this.$store.state.route = res.data.route
+                            this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
+                            this.$store.state.userInfo = res.data
+                            this.$store.state.userRouter = res.data.route
                             localStorage.setItem('router',JSON.stringify(res.data.route))
                             localStorage.setItem('userInfo',JSON.stringify(res.data))
-                            this.$router.push(res.data.route[0].path)
-                            this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
                             this.$EventBus.$emit('LOGIN_INIT', res.data);
+                            this.$router.push(res.data.route[0].path)
                         }else{
                             this.$message.error({ content: res.msg, key:'loading',duration:1.5});
                         }
-                        this.loginLoading = false
+                        setTimeout(()=>{
+                            this.loginLoading = false
+                        },1000 * 1.5)
                     })
                     .catch(err=>{
-                        console.log(err)
+                        setTimeout(()=>{
+                            this.loginLoading = false
+                        },1000 * 1.5)
                     })
                 } else {
                     console.log(valid)
                     return false;
                 }
             });
-        },
-        routerUtile(route){
-            route.forEach(item => {
-                if(item.component){
-                }
-            });
-            console.log(route)
-            return route
         },
     }
 }
