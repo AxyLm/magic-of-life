@@ -1,13 +1,13 @@
 <template>
   <div id="Login">
-      <a-card :hoverable='true'>
+      <a-card :hoverable='true' class="card">
           <img
-      slot="cover"
-      alt="example"
-      src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-    />
+            slot="cover"
+            alt="example"
+            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            />
         <a-form-model ref='userInfo' 
-            :rules="rules" :model="userInfo" style="width:400px" layout='horizontal' 
+            :rules="rules" :model="userInfo" style="width:100%" layout='horizontal' 
             :wrapper-col="wrapperCol" 
             :label-col='labelCol'
             >
@@ -28,7 +28,6 @@
 </template>
 <script>
 
-import EventBus from '@/utils/eventbus'
 
 export default {
     name:'Login',
@@ -43,7 +42,7 @@ export default {
             rules:{
                 username:[
                     { required:true,message: '用户名不能为空', trigger: ['change','blur'] },
-                    { min: 6, message: '用户名最少输入六位', trigger: ['change','blur'] },
+                    { min: 3, message: '用户名最少输入六位', trigger: ['change','blur'] },
                     { max: 16, message: '超出最大范围', trigger: ['change','blur'] }
                 ],
                 password:[
@@ -153,13 +152,18 @@ export default {
                     })
                     .then(res=>{
                         if(res.code == 0){
-                            this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
+                            try {
+                                this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
                             this.$store.state.userInfo = res.data
                             this.$store.state.userRouter = res.data.route
                             localStorage.setItem('router',JSON.stringify(res.data.route))
                             localStorage.setItem('userInfo',JSON.stringify(res.data))
                             this.$EventBus.$emit('LOGIN_INIT', res.data);
                             this.$router.push(res.data.route[0].path)
+                            } catch (error) {
+                                console.log(error)
+                            }
+                            
                         }else{
                             this.$message.error({ content: res.msg, key:'loading',duration:1.5});
                         }
@@ -188,7 +192,21 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('../../assets/1580551394249.jpg') no-repeat center;
-    background-size: 100% 100%;
+    background: url('../../assets/91564913.jpg') no-repeat center;
+    background-size: auto 100%;
+    .card{
+        max-width: 90%;
+    }
+}
+@media screen and (min-width: 576px ){
+    #Login{
+        background-size:100% auto ;
+        background-position: top;
+    }
+}
+@media screen and (max-width: 576px ){
+    #Login{
+        background-size: auto 100%;
+    }
 }
 </style>

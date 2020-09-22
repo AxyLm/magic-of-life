@@ -1,3 +1,5 @@
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App.vue';
 import router from './router'
@@ -5,13 +7,13 @@ import store from './store'
 import PerfectScrollBar from 'perfect-scrollbar'
 import Antd from 'ant-design-vue';
 
-import axios from './utils/request'
-import api from './utils/api'
+import axios from '../utils/request'
+import api from '../utils/api'
 
 import 'ant-design-vue/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-import EventBus from '@/utils/eventbus'
+import EventBus from '../utils/eventbus'
 
 Vue.use(Antd);
 Vue.prototype.$EventBus = EventBus
@@ -47,9 +49,10 @@ Vue.directive('scrollBar',{
 })
 Vue.config.productionTip = false
 
+/* eslint-disable no-new */
 new Vue({
+  el: '#app',
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
-
+})

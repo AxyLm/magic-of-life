@@ -37,7 +37,6 @@ export default {
   watch:{
     $route(val){
       this.getBreadcrumb()
-      console.log(val)
     }
   },
   created(){
@@ -45,7 +44,6 @@ export default {
   },
   mounted(){
     this.routes = global.antRouter
-    console.log(this.$router)
   },
   methods: {
     queryUser(){
@@ -57,8 +55,10 @@ export default {
     signOut() {
       global.antRouter = [];
       localStorage.removeItem("router");
-      this.$router.push("/Login");
-      window.location.reload()
+      this.$router.push("/");
+      setTimeout(()=>{
+        window.location.reload()
+      },30)
     },
   },
 };

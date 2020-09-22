@@ -38,13 +38,14 @@ let router = new VueRouter({
   scrollBehavior: () => ({ y: 0 })
 })
 
-const whiteList = ['/Login','/Error','/Error/404'] // 不重定向白名单
+const whiteList = ['/','/Login','/Error','/Error/404'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
   if( whiteList.indexOf(to.path) > -1 ){
     next()
     return // 避免跳转失败
   }
+  
   global.openMenu = to.path
   if (!validMenu(to)) {
     next({ path: '/Error/404', query: { from: from.path }})

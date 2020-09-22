@@ -32,7 +32,7 @@
     </a-drawer>
     <a-layout style="overflow:hidden">
       <a-layout-header :style="{ background: '#fff', padding: 0 ,display:'flex'}" >
-        <a-button type="primary" style="margin-top: 16px" @click="toggleCollapsed">
+        <a-button type="primary" style="margin-top: 16px" @click="toggleCollapsed" ghost>
           <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" />
         </a-button>
         <mHeader/>
@@ -75,6 +75,11 @@ export default {
             mobileSilderOpen:false
         }
     },
+    watch: {
+      $route() {
+        this.onClose()
+      }
+    },
     computed:{
       PRO_Footer(){
         if(process.env.NODE_ENV == 'production'){
@@ -84,14 +89,21 @@ export default {
         }
       }
     },
+    created(){
+      if(window.innerWidth <= 940){
+          this.mobileSilder = this.collapsed = true
+        }else{
+          this.collapsed = this.mobileSilder = this.mobileSilderOpen =  false
+        }
+    },
     mounted(){
-        window.onresize = ((e)=>{
-          if(e.currentTarget.innerWidth <= 940){
-            this.mobileSilder = this.collapsed = true
-          }else{
-            this.collapsed = this.mobileSilder = this.mobileSilderOpen =  false
-          }
-        })
+      window.onresize = ((e)=>{
+        if(e.currentTarget.innerWidth <= 940){
+          this.mobileSilder = this.collapsed = true
+        }else{
+          this.collapsed = this.mobileSilder = this.mobileSilderOpen =  false
+        }
+      })
     },
     methods:{
       toggleCollapsed() {

@@ -14,7 +14,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style scoped>
 #app{
   margin:0;
   padding:0;

@@ -23,7 +23,6 @@
   </keep-alive>
 </template>
 <script>
-import bus from '@/utils/eventbus'
 export default {
     name:'Menu',
     data(){
