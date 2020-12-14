@@ -109,7 +109,6 @@
 
 <script>
 import { Liquid } from '@antv/g2plot';
-import dates from "./date";
 import mCpu from './components/mcpu'
 import mFs from './components/mfs'
 export default {
@@ -120,7 +119,7 @@ export default {
   data() {
     return {
       app_title: "app",
-      details: dates,
+      details: {},
       cpu: {
         total: 0,
         percpu: [],

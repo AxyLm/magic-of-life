@@ -146,7 +146,7 @@ export default {
             this.$refs.userInfo.validate(valid => {
                 if (valid) {
                     this.loginLoading =  true
-                    this.$axios.post(this.$api.url + '/soulfree/login/login',{
+                    this.$axios.post(this.$api.url + '/user/login',{
                         username:this.userInfo.username,
                         password:this.userInfo.password,
                     })

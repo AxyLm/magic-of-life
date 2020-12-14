@@ -1,6 +1,6 @@
 let  apiconfig={
     dev:{
-      url:'http://localhost:9233',
+      url:'http://magic.frp.soulfree.cn',
       files:'http://localhost:9200',
     },
   }

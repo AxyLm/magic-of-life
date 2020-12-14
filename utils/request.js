@@ -1,8 +1,21 @@
 import axios from 'axios'
 
+const service = axios.create({
+  baseURL: process.env.BASE_API, // api 的 base_url
+  timeout: 30 * 1000, // 请求超时时间
+  method:'POST',
+  headers: {
+    'Content-Type': 'application/json;charset=UTF-8',
+  },
+  transformRequest: [function (data) {
+    data = JSON.stringify(data)
+    return data
+  }]
+})
 
-axios.interceptors.request.use(
+service.interceptors.request.use(
   function (config) {
+    config.baseURL = process.env.BASE_API
     config.headers['broker'] = 'app'
     config.timeout = 1000 * 30;
     return config;
@@ -15,7 +28,7 @@ axios.interceptors.request.use(
 );
 
 // Add a response interceptor
-axios.interceptors.response.use(
+service.interceptors.response.use(
   function (response) {
     // Do something with response data
     return Promise.resolve(response.data)
@@ -28,4 +41,4 @@ axios.interceptors.response.use(
 );
 
 
-export default axios
+export default service
