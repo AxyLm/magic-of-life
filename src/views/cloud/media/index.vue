@@ -52,6 +52,7 @@
 <script>
 import infiniteScroll from 'vue-infinite-scroll';
 import scrollReveal from 'scrollreveal';
+import { Progress } from '@antv/g2plot';
 export default {
     directives: { infiniteScroll },
     name:'Media',
@@ -102,13 +103,13 @@ export default {
 
  console.log(this.$refs.listItem)
         this.initList()
-    },  
+    },
     methods: {
         rejectErr(){
             this.$message.error('错误的文件类型',1);
         },
         initList(){
-            this.$axios.post('http://localhost:9200' + '/xuanque/getInfoByPage',{
+            this.$axios.post('/xuanque/getInfoByPage',{
                 pageSize:this.pageSize,
                 page:this.page
             })
@@ -125,7 +126,7 @@ export default {
         handleInfiniteOnLoad() {
             if(this.loading){
                 this.page++
-                this.$axios.post('http://localhost:9200' + '/xuanque/getInfoByPage',{
+                this.$axios.post('/xuanque/getInfoByPage',{
                     pageSize:this.pageSize,
                     page:this.page
                 })
@@ -161,12 +162,12 @@ export default {
         preview(e){
             this.imgerr = true
             this.imgLoading = true
-            this.$axios.get(this.$api.url + '/public/image/' + e.response.data.imgPath)
+            this.$axios.get('/public/image/' + e.response.data.imgPath)
             .then((res)=>{
                // this.previewImage = res
             })
             console.log(e)
-            this.previewImage = this.$api.url + '/public/image/' + e.response.data.imgPath
+            this.previewImage = progress.env.NODE_ENV + '/public/image/' + e.response.data.imgPath
             this.previewVisible = true
         },
         handleCancel(){
@@ -185,7 +186,7 @@ export default {
             this.$message.loading({ content: '上传中...', key:'imgsub' });
 
             this.fileList.forEach(item => {
-                this.$axios.post(this.$api.files + '/xuanque/picAdd',{
+                this.$axios.post('/xuanque/picAdd',{
                     path:item.response.data.imgPath
                 })
                 .then((res)=>{

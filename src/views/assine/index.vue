@@ -5,7 +5,7 @@
       <a-layout-content class="content">
         <a-row :gutter="[10,10]">
           <a-col :span="24">
-            <span>系统信息</span>
+            <!-- <span>系统信息</span> -->
           </a-col>
           <a-col :span="8" :xs="24" :md="8" :lg="8" class="col-xs">
             <a-card style="width: 100%;height:100px">
@@ -52,22 +52,13 @@
                     :stroke-color="active(cpu.user)"
                   />
                 </div>
-                <!-- <div style="display: flex;">
+                <div style="display: flex;">
                   <p>system：</p>
                   <a-progress
                     :percent="cpu.system"
                     size="small"
                     status="active"
                     :stroke-color="active(cpu.system)"
-                  />
-                </div> -->
-                <div style="display: flex;">
-                  <p>idle：</p>
-                  <a-progress
-                    :percent="cpu.idle"
-                    size="small"
-                    status="active"
-                    :stroke-color="active(cpu.idle)"
                   />
                 </div>
               </a-col>
@@ -160,16 +151,16 @@ export default {
     },
   },
   created() {
-    this.times = setTimeout(()=>{
+    this.times = setInterval(()=>{
       this.init();
     },5000)
   },
   destroyed () {
-    clearTimeout(this.times)
+    clearInterval(this.times)
   },
   mounted() {
     this.init();
-    // this.initChart()
+    this.initChart()
   },
   methods: {
     initChart(){
@@ -190,7 +181,7 @@ export default {
       this.memPerent.render()
     },
     init() {
-      this.$axios.post(this.$api.url + '/soulfree/api/rpiMonit')
+      this.$axios.post('/monit/rpiMonit')
       .then((res) => {
         let data = res.data;
         this.cpu = data.cpu;

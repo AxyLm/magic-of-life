@@ -32,30 +32,30 @@
                     <a-spin tip='Loading' :spinning='formLoading'>
                     <a-form layout='horizontal' :label-col="labelCol" :wrapper-col="wrapperCol" :form='routerInfo'>
                         <transition-group name="slide-fade" mode='out-in'>
-                        <a-form-item label='父级' :labelCol='{span:3}' v-if="addParentShow" key="0">
+                        <a-form-item label='父级(parent)' :labelCol='{span:5}' v-if="addParentShow" key="0">
                             <a-input v-model="addParent.title" :disabled="true"/>
                         </a-form-item>
-                        <a-form-item label='名称' :labelCol='{span:3}' key="1">
+                        <a-form-item label='名称(title)' :labelCol='{span:5}' key="1">
                             <a-input v-model="routerInfo.title"/>
                         </a-form-item>
-                        <a-form-item label='路径' :labelCol='{span:3}' props='title' key="2">
+                        <a-form-item label='路径(route)' :labelCol='{span:5}' props='title' key="2">
                             <a-input v-model="routerInfo.route"/>
                         </a-form-item>
-                        <a-form-item label='图标' :labelCol='{span:3}' key="3">
+                        <a-form-item label='图标(icon)' :labelCol='{span:5}' key="3">
                             <a-input v-model="routerInfo.icon">
                                 <a-icon slot="suffix" :type="routerInfo.icon" />
                             </a-input>
                         </a-form-item>
-                        <a-form-item label='组件' :labelCol='{span:3}' key="4">
+                        <a-form-item label='组件(component)' :labelCol='{span:5}' key="4">
                             <a-input v-model="routerInfo.component"/>
                         </a-form-item>
-                        <a-form-item label='链接' :labelCol='{span:3}' key="5">
+                        <a-form-item label='链接(path)' :labelCol='{span:5}' key="5">
                             <a-input v-model="routerInfo.path"/>
                         </a-form-item>
-                         <a-form-item label='序列' :labelCol='{span:3}' key="sequence">
+                         <a-form-item label='序列(sequence)' :labelCol='{span:5}' key="sequence">
                             <a-input v-model="routerInfo.sequence"/>
                         </a-form-item>
-                        <a-form-item label='权限' :labelCol='{span:3}' key="6">
+                        <a-form-item label='权限(visibleRoles)' :labelCol='{span:5}' key="6">
                             <a-select :value="routerInfo.visibleRoles" @change='authChange' mode="multiple" :dropdownMatchSelectWidth='true' :showArrow='true'> 
                                 <a-select-option v-for="(item,index) in allroles" :key="index+item">
                                     {{item}}
@@ -95,8 +95,8 @@ export default {
             },
             allroles:[''],
             replaceFields:{children:'children', title:'title', key:'node' },
-            labelCol: { span: 4 },
-            wrapperCol: { span: 20 },
+            labelCol: { span: 3 },
+            wrapperCol: { span: 13 },
             changType:'',
         }
     },
@@ -121,7 +121,7 @@ export default {
                     this.addParent = {title:item.title,...item.slots}
                     // item.children.push({title:'新增节点',route:'/',scopedSlots:{title:'change'}})
             }else if(type == 'del'){
-                this.$axios.post(this.$api.url + '/users/delrouter',{
+                this.$axios.post('/users/delrouter',{
                     routerId:item.slots.id
                 })
                 .then((res)=>{
@@ -142,7 +142,7 @@ export default {
             }else{
                 url = '/users/addroute'
             }
-            this.$axios.post(this.$api.url + url,this.routerInfo)
+            this.$axios.post(url,this.routerInfo)
             .then((res)=>{
                 if(res.code == 0){
                     this.$message.success({ content: '成功',duration:2.5});
@@ -156,7 +156,7 @@ export default {
             })
         },
         getRole(){
-            this.$axios.post(this.$api.url + '/users/getrole')
+            this.$axios.post('/users/getrole')
             .then((res)=>{
                 let urole = localStorage.getItem('userInfo').roles
                 const data = res.data
@@ -175,7 +175,7 @@ export default {
             this.treeLoading = true
             let userInfo = JSON.parse(localStorage.getItem('userInfo'))
             console.log(userInfo)
-            this.$axios.post(this.$api.url + '/users/getAuthRouter',{
+            this.$axios.post('/users/getAuthRouter',{
                 "role":userInfo.roles
             })
             .then((res)=>{
@@ -198,7 +198,7 @@ export default {
         },
         selTree(selectedKeys, e){
             this.formLoading = true
-            this.$axios.post(this.$api.url + '/users/queryRouter',{
+            this.$axios.post('/users/queryRouter',{
                 "node":e.node.dataRef.slots
             })
             .then((res)=>{

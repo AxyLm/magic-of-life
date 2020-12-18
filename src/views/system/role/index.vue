@@ -71,7 +71,7 @@ export default {
     },
     methods:{
         queryRole(){
-            request('/users/getrole',{})
+            this.$axios.post('/users/getrole',{})
             .then((res)=>{
                 this.roleList = res.data
             })
