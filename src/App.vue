@@ -12,6 +12,20 @@ export default {
       locale: zhCN,
     }
   },
+  watch: {
+    $route(newValue, oldValue) {
+      document.title = newValue.name
+    }
+  },
+  created () {
+    document.addEventListener('visibilitychange', ()=> {
+      if (document.hidden) {
+        document.title = '不要离开太久哦！';
+      } else {
+        document.title = this.$route.name
+      }
+    })
+  },
 }
 </script>
 <style scoped>

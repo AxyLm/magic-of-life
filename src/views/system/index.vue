@@ -181,6 +181,7 @@ export default {
             .then((res)=>{
                 if(res.code == 0){
                     this.treeData = res.data
+                    localStorage.setItem("router",JSON.stringify(res.data))
                 }
                 this.treeLoading = false
             }).catch(()=>{
