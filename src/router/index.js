@@ -1,4 +1,6 @@
 import Vue from 'vue'
+// import NProgress from 'nprogress' // progress bar 进度条
+// import 'nprogress/nprogress.css' // progress bar style 进度条样式
 import VueRouter from 'vue-router'
 import Layout from '../views/Layout'
 const _import = require( "./_import_"+process.env.NODE_ENV)
@@ -6,6 +8,7 @@ const _import = require( "./_import_"+process.env.NODE_ENV)
 Vue.use(VueRouter)
 let getRouter;
 let menus = []
+var RouterLoading
 let routes = [
   {
     path: '/',
@@ -79,6 +82,7 @@ function routerGo(to, next) {
   getRouter = filterAsyncRouter(routerList) //过滤路由
   router.addRoutes(getRouter) //动态添加路由
   global.antRouter = getRouter //将路由数据传递给全局变量，做侧边栏菜单渲染工作
+  console.log(to)
   next({ ...to, replace: true })
 }
 export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路由字符串，转换为组件对象

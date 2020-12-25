@@ -2,11 +2,11 @@
   <div id="report">
     <a-skeleton
       active
-      :loading="!pm2list.length"
+      :loading="tableLoading"
       :paragraph="{ rows: 6 }"
       :title="false"
     >
-      <a-table :data-source="pm2list" bordered :scroll="{ x: true, y: false }">
+      <a-table :data-source="pm2list"  :scroll="{ x: true, y: false }" :pagination='false'>
         <!-- <a-table-column key='pm_id' title="序号" data-index='pm_id' :width='65' fixed='left'/> -->
         <a-table-column key="pid" title="进程" data-index="pid" />
         <a-table-column key="name" title="名称" data-index="name" />
@@ -23,12 +23,16 @@
           title="语言"
           data-index="exec_interpreter"
         />
-        <a-table-column key="version" title="版本" data-index="version" />
+        <a-table-column
+          key="version"
+          title="版本"
+          data-index="version"
+        />
         <a-table-column
           key="status"
           title="状态"
           data-index="status"
-          fixed="right"
+          :fixed="pm2list.length?'right':''"
         >
           <template slot-scope="status">
             <span>
@@ -46,6 +50,7 @@ export default {
   data() {
     return {
       pm2list: [],
+      tableLoading:true
     };
   },
   created() {
@@ -65,12 +70,13 @@ export default {
     },
     initTable() {
       this.$axios
-        .post("/api/v1/pm2_monit", {
+        .post("http://magic.frp.soulfree.cn/life/api/v1/pm2_monit", {
           authToken: "ad9971d1f97qE11d9f7e",
         })
         .then((data) => {
           if (data.res == 0) {
             this.pm2list = data.data;
+            this.tableLoading = false
           }
         });
     },

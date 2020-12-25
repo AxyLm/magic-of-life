@@ -160,7 +160,7 @@ export default {
   },
   mounted() {
     this.init();
-    this.initChart()
+    // this.initChart()
   },
   methods: {
     initChart(){

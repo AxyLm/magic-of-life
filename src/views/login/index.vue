@@ -1,5 +1,5 @@
 <template>
-  <div id="Login">
+  <div id="Login" :style="'backgroundImage:url('+imgurl+')'">
       <a-card :hoverable='true' class="card">
           <img
             slot="cover"
@@ -33,6 +33,7 @@ export default {
     name:'Login',
     data(){
         return{
+            imgurl:"",
             labelCol: { span: 6 },
             wrapperCol: { span: 18 },
             userInfo:{
@@ -141,6 +142,15 @@ export default {
             loginLoading:false,
         }
     },
+    created () {
+        var imgUrl = '../../assets/91564913.jpg';
+        var imgObject = new Image();
+
+        imgObject.src = imgUrl;
+        imgObject.onload = ()=>{
+            this.imgurl = imgurl
+        };
+    },
     methods:{
         Login(){
             this.$refs.userInfo.validate(valid => {
@@ -195,7 +205,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('../../assets/91564913.jpg') no-repeat;
+    background-repeat: no-repeat;
     background-size: cover;
     .card{
         max-width: 90%;
