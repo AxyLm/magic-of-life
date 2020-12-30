@@ -72,6 +72,7 @@
     "not ie <= 8"
   ],
   "dependencies": {
-    "html-entities": "^2.0.1"
+    "html-entities": "^2.0.1",
+    "nprogress": "^0.2.0"
   }
 }

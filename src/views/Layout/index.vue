@@ -50,9 +50,7 @@
         </template>
         <template v-else>
           <div>
-            <p>Copyright © 2020 浮生若梦</p>
-            <p>All Rights Reserved.</p>
-            <p>京ICP备19051903号</p>
+            <span>Copyright © 2020 浮生若梦</span>
           </div>
         </template>
        
@@ -84,7 +82,7 @@ export default {
         if(process.env.NODE_ENV == 'production'){
           return true
         }else{
-          return true
+          return false
         }
       }
     },

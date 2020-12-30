@@ -1,9 +1,12 @@
 import Vue from 'vue'
-// import NProgress from 'nprogress' // progress bar 进度条
-// import 'nprogress/nprogress.css' // progress bar style 进度条样式
 import VueRouter from 'vue-router'
+import NProgress from 'nprogress'
 import Layout from '../views/Layout'
+import axios from '../../utils/request'
+
+import 'nprogress/nprogress.css'
 const _import = require( "./_import_"+process.env.NODE_ENV)
+NProgress.configure({ showSpinner: false }) // NProgress configuration
 
 Vue.use(VueRouter)
 let getRouter;
@@ -48,7 +51,7 @@ router.beforeEach((to, from, next) => {
     next()
     return // 避免跳转失败
   }
-  
+  NProgress.start()
   global.openMenu = to.path
   if (!validMenu(to)) {
     next({ path: '/Error/404', query: { from: from.path }})
@@ -58,6 +61,10 @@ router.beforeEach((to, from, next) => {
   }else{
     next()
   }
+})
+
+router.afterEach((to, from) => {
+  NProgress.done()
 })
 router.onError((err)=>{
   console.log(err)
@@ -76,14 +83,24 @@ router.onReady(()=>{
     router.currentRoute
   )
 })
-function routerGo(to, next) {
-  
-  let routerList =  JSON.parse(localStorage.getItem('router'))
-  getRouter = filterAsyncRouter(routerList) //过滤路由
-  router.addRoutes(getRouter) //动态添加路由
-  global.antRouter = getRouter //将路由数据传递给全局变量，做侧边栏菜单渲染工作
-  console.log(to)
-  next({ ...to, replace: true })
+function routerGo(to, next){
+  let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  axios.post('/users/getAuthRouter',{
+    "role":userInfo.roles,
+    "flag":1
+  })
+  .then((res)=>{
+    if (res.code == 0) {
+      let routerList =  res.data
+      getRouter = filterAsyncRouter(routerList) //过滤路由
+      router.addRoutes(getRouter) //动态添加路由
+      global.antRouter = getRouter //将路由数据传递给全局变量，做侧边栏菜单渲染工作
+      console.log(to)
+      next({ ...to, replace: true })
+    }
+  }).catch(()=>{
+
+  })
 }
 export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路由字符串，转换为组件对象
   const accessedRouters = asyncRouterMap.filter(route => {
