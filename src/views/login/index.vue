@@ -119,13 +119,16 @@ export default {
                     path:'/system',
                     route:'/system',
                     component: 'Layout',
-                    title:'后台管理',
+                    title:'系统管理',
                     icon:'code',
                     children:[
                         {
+                            title:"用户管理"
+                        },
+                        {
                             path:'router',
                             route:'/system/router',
-                            title:'路由设置',
+                            title:'路由管理',
                             icon:'edit',
                             component:'system/index'
                         },

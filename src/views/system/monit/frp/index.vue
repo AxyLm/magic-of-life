@@ -7,9 +7,9 @@
       :title="false"
     >
       <a-table :data-source="frpList"  :scroll="{ x: true, y: false }" :pagination='false'>
-        <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
+        <!-- <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
           {{ record.description }}
-        </p>
+        </p> -->
         <a-table-column
           key="status"
           title="状态"
@@ -24,6 +24,7 @@
         </a-table-column>
         <!-- <a-table-column key='pm_id' title="序号" data-index='pm_id' :width='65' fixed='left'/> -->
         <a-table-column key="name" title="名称" data-index="name" />
+        <a-table-column key="Proxies" title="Proxies" data-index="Proxies" />
         <a-table-column key="last_start_time" title="last_start" data-index="last_start_time" />
         <a-table-column key="last_close_time" title="last_close" data-index="last_close_time" />
         <a-table-column key="cpu" title="in" data-index="today_traffic_in" />
@@ -58,27 +59,30 @@ export default {
       }
     },
     initTable() {
-      this.$axios
-        .post("http://magic.frp.soulfree.cn/life/monit/frpMonit", {
-          type: "/http",
-        })
-        .then((res) => {
-          if (res.code == 0) {
-            this.frpList = this.frpList.concat(res.data.proxies)
-            this.tableLoading = false
+      this.$axios.post("http://magic.frp.soulfree.cn/life/monit/frpMonit", {
+        type: "/http",
+      })
+      .then((res) => {
+        if (res.code == 0) {
+          for (const item of res.data.proxies) {
+            item.Proxies = 'http'
           }
-        });
-
-      this.$axios
-        .post("http://magic.frp.soulfree.cn/life/monit/frpMonit", {
-          type: "/tcp",
-        })
-        .then((res) => {
-          if (res.code == 0) {
-            this.frpList = this.frpList.concat(res.data.proxies)
-            this.tableLoading = false
+          this.frpList = this.frpList.concat(res.data.proxies)
+          this.tableLoading = false
+        }
+      });
+      this.$axios.post("http://magic.frp.soulfree.cn/life/monit/frpMonit", {
+        type: "/tcp",
+      })
+      .then((res) => {
+        if (res.code == 0) {
+          for (const item of res.data.proxies) {
+            item.Proxies = 'tcp'
           }
-        });
+          this.frpList = this.frpList.concat(res.data.proxies)
+          this.tableLoading = false
+        }
+      });
     },
   },
 };

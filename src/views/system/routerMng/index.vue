@@ -1,20 +1,19 @@
 <template>
     <div style="height:90%;width:100%">
         <a-row style="background:#fff;height:100%">
-                <a-card title="路由管理" style="width:100%;height:auto;min-height:300px" >
-                    <div slot="extra" ><a-icon type="plus-circle" /></div>
-            <a-col :span='10' :xs="24" :xl='10' >
+            <a-card title="路由管理" style="width:100%;height:auto;min-height:300px" >
+                <a-col :span='10' :xs="24" :xl='10' >
                     <a-spin tip="Loading..." :spinning='treeLoading'>
                         <a-tree blockNode draggable
                             :tree-data="treeData"
                             :replaceFields='replaceFields'
-                            :autoExpandParent='true'
-                            :defaultExpandAll='true'
+                            :defaultExpandAll="true"
                             @select='selTree'
                             @dragstart='dragstart'
                             @dragend='dragend'
                             @drop='onDrop'>
                             <div slot-scope="item" slot="change" style="widht:100%">
+                                <a-icon :type="item.icon" />
                                 <span >{{item.title}}</span>
                                 <span style="float:right;">
                                     <a-button size='small' type="link" @click.prevent.stop='change(item,"add")'><span  style="color:#1890ff !important">添加</span></a-button>
@@ -26,8 +25,8 @@
                             </div>
                         </a-tree>
                     </a-spin>
-            </a-col>
-            <a-col :span='14' :xs="24" :xl='14'>
+                </a-col>
+                <a-col :span='14' :xs="24" :xl='14'>
                     <a-spin tip='Loading' :spinning='formLoading'>
                     <a-form layout='horizontal' :label-col="labelCol" :wrapper-col="wrapperCol" :form='routerInfo'>
                         <transition-group name="slide-fade" mode='out-in'>
@@ -67,8 +66,8 @@
                         </transition-group>
                     </a-form>
                     </a-spin>
-            </a-col>
-                </a-card>
+                </a-col>
+            </a-card>
         </a-row>
     </div>
 </template>

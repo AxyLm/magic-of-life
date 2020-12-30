@@ -4,7 +4,7 @@
       <template v-for="item in menuLists">
         <a-menu-item v-if="!item.children" :key="item.id">
           <router-link :to="item.route">
-            <a-icon type="pie-chart" />
+            <a-icon :type="item.icon" />
             <span>{{ item.title }}</span>
           </router-link>
         </a-menu-item>
@@ -13,7 +13,6 @@
 
 
 
-      
     </a-menu>
   </keep-alive>
 </template>
@@ -23,12 +22,12 @@ const SubMenu = {
   template: `
       <a-sub-menu :key="menuInfo.key" v-bind="$props" v-on="$listeners">
         <span slot="title">
-          <a-icon type="mail" /><span>{{ menuInfo.title }}</span>
+          <a-icon :type="menuInfo.icon" /><span>{{ menuInfo.title }}</span>
         </span>
         <template v-for="item in menuInfo.children">
           <a-menu-item v-if="!item.children" :key="item.key">
             <router-link :to="item.route">
-              <a-icon type="pie-chart" />
+              <a-icon :type="item.icon" />
               <span>{{ item.title }}</span>
             </router-link>
           </a-menu-item>
@@ -94,5 +93,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+*{
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently*/
+}
 </style>
-  

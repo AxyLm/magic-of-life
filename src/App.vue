@@ -28,7 +28,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style>
 #app{
   margin:0;
   padding:0;
@@ -51,5 +51,13 @@ export default {
 }
 .slide-fade-enter, .slide-fade-leave-to{
   opacity: 0;
+}
+
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 </style>

@@ -42,11 +42,10 @@
           <rView/>
         </transition>
       </a-layout-content>
-      <a-layout-footer style="text-align: center;height:60px;padding:0 !important;" v-if="PRO_Footer">
+      <a-layout-footer class="footer" v-if="PRO_Footer">
         <template v-if="!mobileSilder">
           <div>
-            <p>Copyright © 2020 浮生若梦 All Rights Reserved.</p>
-            <p>京ICP备19051903号</p>
+            <span>Copyright © 2020 浮生若梦 All Rights Reserved. 京ICP备19051903号   </span>
           </div>
         </template>
         <template v-else>
@@ -85,7 +84,7 @@ export default {
         if(process.env.NODE_ENV == 'production'){
           return true
         }else{
-          return false
+          return true
         }
       }
     },
@@ -169,5 +168,17 @@ export default {
 .main-content::-webkit-scrollbar-thumb{
   border-radius: 8px;
   background-color: #dddee0;
+}
+.footer{
+  text-align: center;
+  padding:0 !important;
+  background:#fff;
+  font-size: 13px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 </style>

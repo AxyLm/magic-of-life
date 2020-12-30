@@ -1,7 +1,7 @@
 <template>
   <div id="m-header">
 
-  <a-breadcrumb>
+  <a-breadcrumb class="text">
 
     <!-- <transition-group name="slide-fade" mode='out-in' slot="itemRender"> -->
       <a-breadcrumb-item href="item.path" v-for="(item,index) in levelList" :key="item+index">
