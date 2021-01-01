@@ -22,7 +22,7 @@ export default {
       if (document.hidden) {
         document.title = '不要离开太久哦！';
       } else {
-        document.title = this.$route.name
+        document.title = this.$route.name || "Magic"
       }
     })
   },

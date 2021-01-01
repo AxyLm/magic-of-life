@@ -4,7 +4,7 @@
         <a-table-column key='name' title="名称" data-index='name' />
         <a-table-column key='code' title='代码' data-index='code' />
         <a-table-column key='roles' title='角色' data-index='roles' />
-        <a-table-column  title='操作' width='150px'>
+        <a-table-column  title='操作' width='150px' key="opera">
             <template slot-scope="{operating}">
                 <!-- <a-tag color="cyan">修改</a-tag> -->
                 <!-- <a-tag color="red">禁用</a-tag> -->
@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import request from '../../../../utils/request'
+import request from '@/utils/request'
 export default {
     name:'role',
     data() {

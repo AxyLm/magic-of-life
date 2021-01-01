@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NProgress from 'nprogress'
 import Layout from '../views/Layout'
-import axios from '../../utils/request'
+import axios from '@/utils/request'
+import store from '@/store'
 
 import 'nprogress/nprogress.css'
 const _import = require( "./_import_"+process.env.NODE_ENV)
@@ -11,14 +12,7 @@ NProgress.configure({ showSpinner: false }) // NProgress configuration
 Vue.use(VueRouter)
 let getRouter;
 let menus = []
-var RouterLoading
 let routes = [
-  {
-    path: '/',
-    redirect:'/Login',
-    name: 'Login',
-    component: () => import(/* webpackChunkName: "Login" */ '../views/login')
-  },
   {
     path: '/Login',
     name: 'Login',
@@ -36,67 +30,71 @@ let routes = [
       }
     ]
   },
+  {
+    path:'/404',
+    name: '404',
+    component: () => import(/* webpackChunkName: "404" */ '../views/error/404.vue')
+  },
 ]
 
 let router = new VueRouter({
-  mode: 'history', //后端支持可开
+  mode: 'history',
   routes,
   scrollBehavior: () => ({ y: 0 })
 })
 
-const whiteList = ['/','/Login','/Error','/Error/404'] // 不重定向白名单
+const whiteList = ['/Login','/Error','/Error/404'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
-  if( whiteList.indexOf(to.path) > -1 ){
-    next()
-    return // 避免跳转失败
-  }
-  NProgress.start()
-  global.openMenu = to.path
   if (!validMenu(to)) {
     next({ path: '/Error/404', query: { from: from.path }})
   }
-  if(!getRouter){
-    routerGo(to, next)
+
+  let token = localStorage.getItem('uToken')
+  NProgress.start()
+
+  if(token){
+    if(to.path == '/Login'){
+      next()
+      NProgress.done()
+    }else{
+      if(!getRouter){
+        getRouter = true
+        routerGo(to, next)
+      }else{
+        next()
+      }
+    }
   }else{
-    next()
+    if( whiteList.indexOf(to.path) > -1 ){
+      next()
+      return // 避免跳转失败
+    }else{
+      next({path:'/Login'})
+    }
   }
 })
 
 router.afterEach((to, from) => {
   NProgress.done()
 })
-router.onError((err)=>{
-  console.log(err)
-  console.log('router on error')
-  console.log(
-    router.app,
-    router.mode,
-    router.currentRoute
-  )
-})
-router.onReady(()=>{
-  console.log('router on ready')
-  console.log(
-    (router.app)+'\n',
-    router.mode+'\n',
-    router.currentRoute
-  )
-})
 function routerGo(to, next){
-  let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  var userInfo = store.state.user.userInfo
+  console.log(to)
   axios.post('/users/getAuthRouter',{
     "role":userInfo.roles,
-    "flag":1
   })
   .then((res)=>{
     if (res.code == 0) {
       let routerList =  res.data
-      getRouter = filterAsyncRouter(routerList) //过滤路由
-      router.addRoutes(getRouter) //动态添加路由
-      global.antRouter = getRouter //将路由数据传递给全局变量，做侧边栏菜单渲染工作
-      console.log(to)
-      next({ ...to, replace: true })
+      store.dispatch('SetRouter',res.data)
+      let getRouter = filterAsyncRouter(routerList) //过滤路由
+      router.addRoutes(getRouter) //
+      if(to.path == '/'){
+        next({ path:getRouter[0].path, replace: true })
+      }else{
+        next(to)
+      }
     }
   }).catch(()=>{
 
@@ -115,6 +113,9 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
           route.component = _import(route.component)
         }
         route.name = route.title
+        route.meta = {
+          id:route.id
+        }
       }
       menus.push(route)
     } catch (e) {

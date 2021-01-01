@@ -7,18 +7,14 @@ import store from './store'
 import PerfectScrollBar from 'perfect-scrollbar'
 import Antd from 'ant-design-vue';
 
-import axios from '../utils/request'
-import api from '../utils/api'
+import axios from '@/utils/request'
 
 import 'ant-design-vue/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-import EventBus from '../utils/eventbus'
 
 Vue.use(Antd);
-Vue.prototype.$EventBus = EventBus
 Vue.prototype.$axios = axios
-Vue.prototype.$api = api
 const el_scrollBar = (el) =>{
   if(el._ps instanceof PerfectScrollBar) {
     el._ps.update()
@@ -52,7 +48,7 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
   store,
+  router,
   render: h => h(App)
 })

@@ -1,7 +1,7 @@
 <template>
   <keep-alive>
     <a-menu :theme="theme" mode="inline" :default-selected-keys="selMenu" :default-open-keys="openMenu" >
-      <template v-for="item in menuLists">
+      <template v-for="item in menus">
         <a-menu-item v-if="!item.children" :key="item.id">
           <router-link :to="item.route">
             <a-icon :type="item.icon" />
@@ -25,13 +25,13 @@ const SubMenu = {
           <a-icon :type="menuInfo.icon" /><span>{{ menuInfo.title }}</span>
         </span>
         <template v-for="item in menuInfo.children">
-          <a-menu-item v-if="!item.children" :key="item.key">
+          <a-menu-item v-if="!item.children && item.type=='01'" :key="item.id">
             <router-link :to="item.route">
               <a-icon :type="item.icon" />
               <span>{{ item.title }}</span>
             </router-link>
           </a-menu-item>
-          <sub-menu v-else :key="item.key" :menu-info="item" />
+          <sub-menu v-else-if="item.children && item.type=='01'" :key="item.id" :menu-info="item" />
         </template>
       </a-sub-menu>
     `,
@@ -54,10 +54,8 @@ export default {
     name:'Menu',
     data(){
       return{
-        menuLists:[],
         openMenu:[],
         selMenu:[],
-        route:[]
       }
     },
     props:{
@@ -65,31 +63,21 @@ export default {
         default:'dark'
       }
     },
+    computed: {
+      menus() {
+        return this.$store.state.user.router
+      }
+    },
     watch:{
-      $router(){
-        // this.menuInit()
-      },
       $route(){
-        this.selMenu = [this.$route.path]
-        this.openMenu = [this.$route.matched[0].path]
+        this.selMenu = [this.$route.meta.id]
+        this.openMenu = [this.$route.matched[0].meta.id]
       }
     },
     created(){
-      this.selMenu = [this.$route.path]
-      this.openMenu = [this.$route.matched[0].path]
+      this.selMenu = [this.$route.meta.id]
+      this.openMenu = [this.$route.matched[0].meta.id]
     },
-    mounted(){
-      this.menuInit()
-    },
-    activated(){
-      this.menuInit()
-    },
-    methods:{
-      menuInit(){
-        console.log('menu init',this.$store.state.userInfo)
-        this.menuLists = JSON.parse( localStorage.getItem('router') )
-      },
-    }
 }
 </script>
 <style lang="scss" scoped>

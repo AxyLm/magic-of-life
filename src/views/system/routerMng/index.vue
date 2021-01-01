@@ -4,10 +4,12 @@
             <a-card title="路由管理" style="width:100%;height:auto;min-height:300px" >
                 <a-col :span='10' :xs="24" :xl='10' >
                     <a-spin tip="Loading..." :spinning='treeLoading'>
-                        <a-tree blockNode draggable
+                        <a-tree blockNode draggable autoExpandParent
                             :tree-data="treeData"
                             :replaceFields='replaceFields'
                             :defaultExpandAll="true"
+                            :defaultExpandParent='true'
+                            :defaultExpandedKeys='["/"]'
                             @select='selTree'
                             @dragstart='dragstart'
                             @dragend='dragend'
@@ -28,7 +30,7 @@
                 </a-col>
                 <a-col :span='14' :xs="24" :xl='14'>
                     <a-spin tip='Loading' :spinning='formLoading'>
-                    <a-form layout='horizontal' :label-col="labelCol" :wrapper-col="wrapperCol" :form='routerInfo'>
+                    <a-form layout='horizontal' :label-col="labelCol" :wrapper-col="wrapperCol" :form='routerInfo' :disabled="true" ref='saveInfo'>
                         <transition-group name="slide-fade" mode='out-in'>
                             <a-form-item label='父级(parent)' :labelCol='{span:5}' v-if="addParentShow" key="0">
                                 <a-input v-model="addParent.title" :disabled="true"/>
@@ -53,9 +55,16 @@
                             <a-form-item label='序列(sequence)' :labelCol='{span:5}' key="sequence">
                                 <a-input v-model="routerInfo.sequence"/>
                             </a-form-item>
+                            <a-form-item label='类型(type)' :labelCol='{span:5}' key="type">
+                                <a-select v-model="routerInfo.type" :showArrow='true'> 
+                                    <a-select-option v-for="(item,index) in tyleList" :key="index+item" :value='item.code'>
+                                        {{item.value}}
+                                    </a-select-option>
+                                </a-select>
+                            </a-form-item>
                             <a-form-item label='权限(visibleRoles)' :labelCol='{span:5}' key="6">
                                 <a-select :value="routerInfo.visibleRoles" @change='authChange' mode="multiple" :dropdownMatchSelectWidth='true' :showArrow='true'> 
-                                    <a-select-option v-for="(item,index) in allroles" :key="index+item">
+                                    <a-select-option v-for="(item,index) in allroles" :key="index+item" :value='item.code'>
                                         {{item}}
                                     </a-select-option>
                                 </a-select>
@@ -89,13 +98,24 @@ export default {
                 "component":"",
                 "parent":null,
                 "sequence":'',
+                "type":"",
                 "visibleRoles":[]
             },
             allroles:[''],
-            replaceFields:{children:'children', title:'title', key:'node' },
+            replaceFields:{children:'children', title:'title', key:'id' },
             labelCol: { span: 3 },
             wrapperCol: { span: 13 },
             changType:'',
+            tyleList:[
+                {
+                    code:"01",
+                    value:'菜单'
+                },
+                {
+                    code:"02",
+                    value:"按钮"
+                }
+            ]
         }
     },
     created(){
@@ -124,6 +144,17 @@ export default {
             this.addParentShow = false
             console.log(item,type)
             if(type == 'add'){
+                    this.routerInfo = {
+                        "title":"",
+                        "route":"",
+                        "path":"",
+                        "icon":"plus",
+                        "component":"",
+                        "parent":null,
+                        "sequence":'',
+                        "type":"",
+                        "visibleRoles":[]
+                    }
                     this.addParentShow = true
                     this.changType = 'add'
                     this.addParent = item
@@ -148,6 +179,7 @@ export default {
             if(this.changType == 'query'){
                 url = '/users/updateRoute'
             }else{
+
                 url = '/users/addroute'
             }
             this.$axios.post(url,this.routerInfo)
@@ -182,26 +214,21 @@ export default {
         initTree(){
             //src\views\system\monit\frp\index.vue
             this.treeLoading = true
-            let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-            console.log(userInfo)
-            this.$axios.post('/users/getAuthRouter',{
-                "role":userInfo.roles,
-                "flag":1
-            })
+            this.$axios.post('/users/getAuthRouter',{"flag":1})
             .then((res)=>{
                 if(res.code == 0){
+                    this.$store.dispatch('SetRouter',res.data)
                     this.treeData = [
                         {
                             title:"根节点",
                             id:null,
-
+                            route:'/',
                             disabled:true,
                             selectable:true,
                             scopedSlots:{title: 'change'},
                             children:res.data
                         }
                     ]
-                    localStorage.setItem("router",JSON.stringify(res.data))
                 }
                 this.treeLoading = false
             }).catch(()=>{

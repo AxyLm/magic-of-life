@@ -1,5 +1,5 @@
 <template>
-  <div id="Login" :style="'backgroundImage:url('+imgurl+')'">
+  <div id="Login" >
       <a-card :hoverable='true' class="card">
           <img
             slot="cover"
@@ -145,38 +145,23 @@ export default {
             loginLoading:false,
         }
     },
-    created () {
-        var imgUrl = '../../assets/91564913.jpg';
-        var imgObject = new Image();
-
-        imgObject.src = imgUrl;
-        imgObject.onload = ()=>{
-            this.imgurl = imgurl
-        };
-    },
     methods:{
         Login(){
             this.$refs.userInfo.validate(valid => {
                 if (valid) {
                     this.loginLoading =  true
-                    this.$axios.post('/user/login',{
+                    this.$axios.post('/login',{
                         username:this.userInfo.username,
                         password:this.userInfo.password,
                     })
                     .then(res=>{
                         if(res.code == 0){
                             try {
-                                this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
-                                if(this.userInfo.username == 'admin'){
-                                    this.$store.state.userRouter = this.routerList
-                                }else{
-                                    this.$store.state.userRouter = res.data.route
-                                }
-                                this.$store.state.userInfo = res.data
-                                localStorage.setItem('router',JSON.stringify(res.data.route))
+                                this.$store.dispatch("Login", res.data);
+                                localStorage.setItem('uToken',res.data.token)
                                 localStorage.setItem('userInfo',JSON.stringify(res.data))
-                                this.$EventBus.$emit('LOGIN_INIT', res.data);
-                                this.$router.push(res.data.route[0].path)
+                                this.$message.success({ content: '登录成功', key:'loading',duration:1.5});
+                                this.$router.push({path:'/'})
                             } catch (error) {
                                 console.log(error)
                             }
@@ -206,13 +191,31 @@ export default {
     width: 100vw;
     height:100vh;
     display: flex;
+    background-image: url("../../assets/91564913.webp") ,url("../../assets/91564913.jpg");
     justify-content: center;
     align-items: center;
+    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     .card{
         max-width: 90%;
+        position: relative;
+        z-index: 2;
     }
+}
+.backLazy{
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 1;
+    text-align: center;
+}
+.backLazy img{
+    width: auto;
+    min-width: 100%;
+    height: 100%;
+
 }
 @media screen and (min-width: 576px ){
     #Login{

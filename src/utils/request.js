@@ -17,6 +17,7 @@ service.interceptors.request.use(
   function (config) {
     config.baseURL = process.env.BASE_API
     config.headers['broker'] = 'app'
+    config.headers['Authorization'] = localStorage.getItem('uToken') // 让每个请求携带自定义token 请根据实际情况自行修改
     config.timeout = 1000 * 30;
     return config;
   },
