@@ -12,10 +12,10 @@
             :label-col='labelCol'
             >
             <a-form-model-item ref="us" prop="username" label='用户名'>
-                <a-input v-model="userInfo.username" focus placeholder="用户名" clearable type='text'/>
+                <a-input v-model="userInfo.username" focus placeholder="用户名" clearable type='text' @pressEnter='Login()'/>
             </a-form-model-item>
             <a-form-model-item ref="ps" prop="password" label='密码'>
-                <a-input v-model="userInfo.password" placeholder="密码" clearable type="password" :show-password='true'/>
+                <a-input v-model="userInfo.password" placeholder="密码" clearable type="password" :show-password='true' @pressEnter='Login()'/>
             </a-form-model-item>
             <a-form-model-item  :wrapper-col='{span:24}'>
                 <a-button type='submit' @click="Login()" :loading='loginLoading' block>

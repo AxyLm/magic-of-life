@@ -52,7 +52,6 @@ router.beforeEach((to, from, next) => {
 
   let token = localStorage.getItem('uToken')
   NProgress.start()
-
   if(token){
     if(to.path == '/Login'){
       next()
@@ -95,9 +94,11 @@ function routerGo(to, next){
       }else{
         next(to)
       }
+    }else{
+      next({path:'/Login'})
     }
   }).catch(()=>{
-
+    next({path:'/Login'})
   })
 }
 export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路由字符串，转换为组件对象
@@ -129,7 +130,7 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
   return accessedRouters
 }
 export function validMenu(to) {
-  if ((to.path.indexOf('/Error/404') >= 0 || to.path === '/')) {
+  if ((whiteList.indexOf(to.path) > -1)) {
     return true
   }
   if (menus.length > 0 && (to.name || to.path)) {

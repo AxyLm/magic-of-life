@@ -15,8 +15,8 @@
       </a-avatar>
 
       <a-menu slot="overlay">
-        <a-menu-item key="1">
-          <a-icon type="user" />用户信息
+        <a-menu-item key="1" @click='userInfo'>
+            <a-icon type="user" />用户信息
         </a-menu-item>
         <a-menu-item key="2" @click="signOut">
           <a-icon type="poweroff" />退出登录
@@ -52,13 +52,13 @@ export default {
     getBreadcrumb() {
       this.levelList = this.$route.matched
     },
+    userInfo(){
+      this.$router.push('/user/info')
+    },
     signOut() {
-      global.antRouter = [];
-      localStorage.removeItem("router");
-      this.$router.push("/");
-      setTimeout(()=>{
-        window.location.reload()
-      },30)
+      localStorage.removeItem("uToken");
+      this.$router.push("/Login");
+      location.reload()
     },
   },
 };

@@ -128,6 +128,7 @@ export default {
     },
     methods:{
         authChange(e){
+            console.log(e)
             this.routerInfo.visibleRoles = e
         },
         delRoute(item){
