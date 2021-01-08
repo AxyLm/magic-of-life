@@ -65,7 +65,7 @@
                             <a-form-item label='权限(visibleRoles)' :labelCol='{span:5}' key="6">
                                 <a-select :value="routerInfo.visibleRoles" @change='authChange' mode="multiple" :dropdownMatchSelectWidth='true' :showArrow='true'> 
                                     <a-select-option v-for="(item,index) in allroles" :key="index+item" :value='item.code'>
-                                        {{item}}
+                                        {{item.name}}
                                     </a-select-option>
                                 </a-select>
                             </a-form-item>
@@ -114,6 +114,10 @@ export default {
                 {
                     code:"02",
                     value:"按钮"
+                },
+                {
+                    code:"03",
+                    value:"链接"
                 }
             ]
         }
@@ -199,17 +203,10 @@ export default {
         getRole(){
             this.$axios.post('/users/getrole')
             .then((res)=>{
-                let urole = localStorage.getItem('userInfo').roles
-                const data = res.data
-                let roles = []
-                for (let i = 0; i < data.length; i++) {
-                    const item = data[i];
-                    roles.push(item.code)
-                    if(item.roles == urole){
-                        this.defaultRole = [item.code]
-                    }
+                if(res.code == 0){
+                this.allroles = res.data
+
                 }
-                this.allroles = roles
             })
         },
         initTree(){

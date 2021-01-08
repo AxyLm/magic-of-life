@@ -1,6 +1,6 @@
 <template>
   <keep-alive>
-    <a-menu :theme="theme" mode="inline" :default-selected-keys="selMenu" :default-open-keys="openMenu" >
+    <a-menu :theme="theme" mode="inline" :default-selected-keys="selMenu" :default-open-keys="openMenu"  :selectedKeys='selMenu'>
       <template v-for="item in menus">
         <a-menu-item v-if="!item.children" :key="item.id">
           <router-link :to="item.route">
@@ -24,7 +24,7 @@ const SubMenu = {
           <a-icon :type="menuInfo.icon" /><span>{{ menuInfo.title }}</span>
         </span>
         <template v-for="item in menuInfo.children">
-          <a-menu-item v-if="!item.children" :key="item.id">
+          <a-menu-item v-if="!item.children" :key="item.id" v-show="item.type == '01'">
             <router-link :to="item.route">
               <a-icon :type="item.icon" />
               <span>{{ item.title }}</span>
@@ -46,6 +46,7 @@ const SubMenu = {
     },
   },
 };
+import OutSys from '@/utils/OutSys'
 export default {
     components: {
       'sub-menu': SubMenu,
@@ -68,8 +69,15 @@ export default {
       }
     },
     watch:{
-      $route(){
-        this.selMenu = [this.$route.meta.id]
+      $route(newValue,oldValue){
+        let meta = this.$route.meta
+        if (OutSys.checkOutSysUrl(newValue.path)) {
+          console.log(11,meta,)
+          this.selMenu = []
+        }else{
+          console.log(newValue.meta)
+          this.selMenu = [meta.id]
+        }
         this.openMenu = [this.$route.matched[0].meta.id]
       }
     },

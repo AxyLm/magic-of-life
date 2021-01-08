@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import NProgress from 'nprogress'
 import Layout from '../views/Layout'
 import axios from '@/utils/request'
+import OutSys from '@/utils/OutSys'
 import store from '@/store'
 
 import 'nprogress/nprogress.css'
@@ -46,6 +47,11 @@ let router = new VueRouter({
 const whiteList = ['/Login','/Error','/Error/404'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
+  if (OutSys.checkOutSysUrl(to)) {
+    console.info(to)
+    console.log(from)
+    return
+  }
   if (!validMenu(to)) {
     next({ path: '/Error/404', query: { from: from.path }})
   }
@@ -115,7 +121,8 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
         }
         route.name = route.title
         route.meta = {
-          id:route.id
+          id:route.id,
+          type:route.type
         }
       }
       menus.push(route)

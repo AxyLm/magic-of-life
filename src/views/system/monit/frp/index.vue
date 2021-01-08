@@ -59,7 +59,7 @@ export default {
       }
     },
     initTable() {
-      this.$axios.post("http://magic.frp.soulfree.cn/life/monit/frpMonit", {
+      this.$axios.post("/monit/frpMonit", {
         type: "/http",
       })
       .then((res) => {
@@ -71,7 +71,7 @@ export default {
           this.tableLoading = false
         }
       });
-      this.$axios.post("http://magic.frp.soulfree.cn/life/monit/frpMonit", {
+      this.$axios.post("/monit/frpMonit", {
         type: "/tcp",
       })
       .then((res) => {

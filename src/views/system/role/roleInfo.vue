@@ -63,7 +63,7 @@ export default {
         url = "editrole";
       }
       this.$axios
-        .post("/users/" + url, { info: item })
+        .post("/role/" + url, { info: item })
         .then((res) => {
           if (res.code == 0) {
             this.$message.success({ content: "成功", duration: 1.5 });

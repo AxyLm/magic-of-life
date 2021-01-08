@@ -67,7 +67,7 @@ export default {
       }
     },
     initTable() {
-      this.$axios.post("http://magic.frp.soulfree.cn/life/monit/pm2Monit")
+      this.$axios.post("/monit/pm2Monit")
       .then((data) => {
         if (data.res == 0) {
           this.pm2list = data.data;

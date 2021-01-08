@@ -173,9 +173,10 @@ export default {
                         },1000 * 1.5)
                     })
                     .catch(err=>{
+                        this.$message.error({ content: '网络异常', key:'error',duration:1.5});
                         setTimeout(()=>{
                             this.loginLoading = false
-                        },1000 * 1.5)
+                        },1000 * 0.5)
                     })
                 } else {
                     console.log(valid)
