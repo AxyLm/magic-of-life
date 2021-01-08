@@ -67,16 +67,13 @@ export default {
       }
     },
     initTable() {
-      this.$axios
-        .post("http://magic.frp.soulfree.cn/life/api/v1/pm2_monit", {
-          authToken: "ad9971d1f97qE11d9f7e",
-        })
-        .then((data) => {
-          if (data.res == 0) {
-            this.pm2list = data.data;
-            this.tableLoading = false
-          }
-        });
+      this.$axios.post("http://magic.frp.soulfree.cn/life/monit/pm2Monit")
+      .then((data) => {
+        if (data.res == 0) {
+          this.pm2list = data.data;
+          this.tableLoading = false
+        }
+      });
     },
   },
 };

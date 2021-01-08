@@ -9,6 +9,7 @@
         :collapsed='collapsed'
         :trigger='null'
         v-show="!mobileSilder"
+        style='overflow: hidden;'
       >
         <div class="logo" style="overflow:hidden">
           <img src="https://gw.alipayobjects.com/zos/alicdn/hzEndUVEx/Layout.svg" alt="" srcset="">
@@ -32,9 +33,9 @@
     </a-drawer>
     <a-layout style="overflow:hidden">
       <a-layout-header :style="{ background: '#fff', padding: 0 ,display:'flex'}" >
-        <a-button type="primary" style="margin-top: 16px" @click="toggleCollapsed" ghost>
+        <span type="primary" :style="{cursor:'pointer','padding': mobileSilder ? '0 10px' : '0 10px 0 25px' ,'lineHeight': '65px','fontSize':'18px'}" @click="toggleCollapsed" ghost>
           <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" />
-        </a-button>
+        </span>
         <mHeader/>
       </a-layout-header>
       <a-layout-content class="main-content">
@@ -150,23 +151,6 @@ export default {
   height:calc( 100vh - 160px);
 }
 
-.main-content::-webkit-scrollbar {
-  // display: none;
-} 
-/*滚动条整体部分,必须要设置*/
-.main-content::-webkit-scrollbar{
-  width:8px;
-  height:8px;
-}
-/*滚动条的轨道*/
-.main-content::-webkit-scrollbar-track{
-  border-radius: 8px;
-}
-/*滚动条的滑块按钮*/
-.main-content::-webkit-scrollbar-thumb{
-  border-radius: 8px;
-  background-color: #dddee0;
-}
 .footer{
   text-align: center;
   padding:0 !important;

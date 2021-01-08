@@ -7,7 +7,7 @@
 <script>
     export default {
         created () {
-            window.location.reload('')
+            window.open("http://kd.soulfree.cn/index.php?explorer")
         },
     }
 </script>

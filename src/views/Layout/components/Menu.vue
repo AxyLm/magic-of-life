@@ -12,7 +12,6 @@
       </template>
 
 
-
     </a-menu>
   </keep-alive>
 </template>
@@ -25,13 +24,13 @@ const SubMenu = {
           <a-icon :type="menuInfo.icon" /><span>{{ menuInfo.title }}</span>
         </span>
         <template v-for="item in menuInfo.children">
-          <a-menu-item v-if="!item.children && item.type=='01'" :key="item.id">
+          <a-menu-item v-if="!item.children" :key="item.id">
             <router-link :to="item.route">
               <a-icon :type="item.icon" />
               <span>{{ item.title }}</span>
             </router-link>
           </a-menu-item>
-          <sub-menu v-else-if="item.children && item.type=='01'" :key="item.id" :menu-info="item" />
+          <sub-menu v-else-if="item.children" :key="item.id" :menu-info="item" />
         </template>
       </a-sub-menu>
     `,

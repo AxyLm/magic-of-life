@@ -29,6 +29,23 @@ export default {
 }
 </script>
 <style>
+*::-webkit-scrollbar {
+   /* display: none; */
+}
+/*滚动条整体部分,必须要设置*/
+*::-webkit-scrollbar{
+  width: 3px;
+  height: 3px;
+}
+/*滚动条的轨道*/
+*::-webkit-scrollbar-track{
+  border-radius: 3px;
+}
+/*滚动条的滑块按钮*/
+*::-webkit-scrollbar-thumb{
+  border-radius: 3px;
+  background-color: rgba(0,0,0,0.3);
+}
 #app{
   margin:0;
   padding:0;
