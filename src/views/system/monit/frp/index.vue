@@ -1,5 +1,6 @@
 <template>
   <div id="report">
+    <a-switch default-checked />
     <a-skeleton
       active
       :loading="tableLoading"
@@ -32,11 +33,16 @@
         
       </a-table>
     </a-skeleton>
+    <!-- <Report style="width:100%"/> -->
   </div>
 </template>
 <script>
+import Report from './report'
 export default {
   name: "report",
+  components: {
+    Report,
+  },
   data() {
     return {
       frpList: [],
