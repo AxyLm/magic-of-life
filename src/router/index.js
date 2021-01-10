@@ -11,7 +11,7 @@ const _import = require( "./_import_"+process.env.NODE_ENV)
 NProgress.configure({ showSpinner: false }) // NProgress configuration
 
 Vue.use(VueRouter)
-let getRouter;
+let getRouter = false;
 let menus = []
 let routes = [
   {
@@ -56,7 +56,10 @@ router.beforeEach((to, from, next) => {
     next({ path: '/Error/404', query: { from: from.path }})
   }
 
-  let token = localStorage.getItem('uToken')
+  let token = store.state.user.token
+  if(!token){
+    token = localStorage.getItem('uToken')
+  }
   NProgress.start()
   if(token){
     if(to.path == '/Login'){

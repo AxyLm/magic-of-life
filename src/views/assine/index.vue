@@ -65,9 +65,9 @@
             </a-card>
           </a-col>
           <a-col :span="5" :xs="24" :md="12" :lg="12" class="col-xs">
-            <a-card title="内存使用" style="width: 100%;height:100%">
-              <a-col style="text-align: center;height:100%;overflow:hidden" :span="10">
-                <a-skeleton active avatar :loading='!(cpu&&cpu.total)' :paragraph='false' :title='false' size='large'>
+            <a-card title="内存" style="width: 100%;height:100%">
+              <a-col style="text-align: center;" :span="10">
+                <a-skeleton active avatar :loading='!(mem&&mem.percent)' :paragraph='false' :title='false' size='large'>
                   <a-progress type="dashboard" :percent="mem.percent" style="margin:auto" />
                   <!-- <div ref='percent'></div> -->
                   <!-- <span>总使用率</span> -->
@@ -82,15 +82,31 @@
             </a-card>
           </a-col>
         </a-row>
-        <a-row :gutter="[10,30]">
-          <a-col :span="8" :xs="24" :lg="12" class="col-xs" style="padding-right: 10px;">
-            <span>核心占用</span>
-            <m-cpu :percpu="cpu.percpu" />
+        <a-row :gutter="[10,10]">
+          <a-col :span="5" :xs="24" :md="12" :lg="12" class="col-xs" >
+            <a-card title="核心占用" style="width: 100%;height:190px">
+              <m-cpu :percpu="cpu.percpu" />
+            </a-card>
           </a-col>
-          <a-col :span="8" :xs="24" :lg="12" class="col-xs" style="padding-right: 10px;">
-            <span>文件使用</span>
-            <m-fs :fs-list="fs" />
+          <a-col :span="5" :xs="24" :md="12" :lg="12" class="col-xs" >
+            <a-card title="文件使用"  style="width: 100%;height:190px">
+              <m-fs :fs-list="fs" />
+            </a-card>
           </a-col>
+        </a-row>
+        <!-- <a-row :gutter="[10,30]">
+          <a-col :span="24">
+            <DiskIo :diskList='diskio' style="width:100%;height:300px"/>
+          </a-col>
+        </a-row> -->
+        <a-row :gutter="[10,10]">
+            <a-col :span="24">
+          <a-card title="实时流量（Kb/s）" style="width: 100%;height:100%">
+              <a-skeleton active :loading='!trafficList.length' :paragraph="{ rows: 3 }" :title='false'>
+                <NetWork :trafficList='trafficList' style="width:100%;height:300px"/>
+              </a-skeleton>
+          </a-card>
+            </a-col>
         </a-row>
       </a-layout-content>
       <!-- <a-layout-footer class="app_footer" style="text-align: center"></a-layout-footer> -->
@@ -102,15 +118,18 @@
 import { Liquid } from '@antv/g2plot';
 import mCpu from './components/mcpu'
 import mFs from './components/mfs'
+import DiskIo from './components/diskIo'
+import NetWork from './components/netWork'
 export default {
   name:'glances_web',
   components: {
-    mCpu,mFs
+    mCpu,mFs,NetWork
   },
   data() {
     return {
       app_title: "app",
       details: {},
+      diskio:[],
       cpu: {
         total: 0,
         percpu: [],
@@ -130,6 +149,7 @@ export default {
       mem: 0,
       memPerent:'',
       times:'',
+      trafficList:[]
     };
   },
   computed: {
@@ -151,9 +171,6 @@ export default {
     },
   },
   created() {
-    this.times = setInterval(()=>{
-      this.init();
-    },5000)
   },
   destroyed () {
     clearInterval(this.times)
@@ -191,8 +208,14 @@ export default {
         this.fs = data.fs;
         this.systemTime = data.now;
         this.mem = data.mem;
+        this.diskio = data.diskio
+        this.trafficList = data.network
         this.skeleton = false;
         this.cpu.percpu = data.quicklook.percpu;
+
+        this.times = setTimeout(()=>{
+          this.init();
+        },5000)
       })
       .catch((err) => {
         console.warn(err);
