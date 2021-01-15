@@ -7,7 +7,7 @@ import OutSys from '@/utils/OutSys'
 import store from '@/store'
 
 import 'nprogress/nprogress.css'
-const _import = require( "./_import_"+process.env.NODE_ENV)
+const _import = require("./_import_" + process.env.NODE_ENV)
 NProgress.configure({ showSpinner: false }) // NProgress configuration
 
 Vue.use(VueRouter)
@@ -20,19 +20,19 @@ let routes = [
     component: () => import(/* webpackChunkName: "Login" */ '../views/login')
   },
   {
-    path:'/Error',
+    path: '/Error',
     name: 'Error',
-    component:Layout,
-    children:[
+    component: Layout,
+    children: [
       {
-        path:'404',
-        name:'err',
+        path: '404',
+        name: 'err',
         component: () => import(/* webpackChunkName: "404" */ '../views/error/404.vue')
       }
     ]
   },
   {
-    path:'/404',
+    path: '/404',
     name: '404',
     component: () => import(/* webpackChunkName: "404" */ '../views/error/404.vue')
   },
@@ -44,7 +44,7 @@ let router = new VueRouter({
   scrollBehavior: () => ({ y: 0 })
 })
 
-const whiteList = ['/Login','/Error','/Error/404'] // 不重定向白名单
+const whiteList = ['/Login', '/Error', '/Error/404'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
   if (OutSys.checkOutSysUrl(to)) {
@@ -53,11 +53,11 @@ router.beforeEach((to, from, next) => {
     return
   }
   if (!validMenu(to)) {
-    next({ path: '/Error/404', query: { from: from.path }})
+    next({ path: '/Error/404', query: { from: from.path } })
   }
 
   let token = store.state.user.token
-  if(!token){
+  if (!token) {
     token = localStorage.getItem('uToken')
   }
   NProgress.start()
@@ -67,8 +67,8 @@ router.beforeEach((to, from, next) => {
     NProgress.done()
     return
   } else {
-    if(token){
-      if(!getRouter){
+    if (token) {
+      if (!getRouter) {
         getRouter = true
         routerGo(to, next)
       } else {
@@ -78,8 +78,8 @@ router.beforeEach((to, from, next) => {
           next()
         }
       }
-    }else{
-      next({path:'/Login'})
+    } else {
+      next({ path: '/Login' })
     }
   }
 })
@@ -87,28 +87,28 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from) => {
   NProgress.done()
 })
-async function routerGo(to){
+async function routerGo(to) {
   let userInfo = store.state.user.userInfo
-  await axios.post('/users/getAuthRouter',{
-    "role":userInfo.roles,
+  await axios.post('/users/getAuthRouter', {
+    "role": userInfo.rolecode,
   })
-  .then((res) => {
-    if (res.code == 0) {
-      let routerList =  res.data
-      let getRouter = filterAsyncRouter(routerList) //过滤路由
-      router.addRoutes(getRouter) //
-      store.dispatch('SetRouter',res.data)
-      if(to.path == '/'){
-        router.replace({ path:getRouter[0].path, replace: true ,name:getRouter[0].name })
-      }else{
-        router.replace(to)
+    .then((res) => {
+      if (res.code == 0) {
+        let routerList = res.data
+        let getRouter = filterAsyncRouter(routerList) //过滤路由
+        router.addRoutes(getRouter) //
+        store.dispatch('SetRouter', res.data)
+        if (to.path == '/') {
+          router.replace({ path: getRouter[0].path, replace: true, name: getRouter[0].name })
+        } else {
+          router.replace(to)
+        }
+      } else {
+        router.replace({ path: '/Login', replace: true, })
       }
-    }else{
-      router.replace({path:'/Login',replace: true ,})
-    }
-  }).catch(()=>{
-    router.replace({path:'/Login',replace: true ,})
-  })
+    }).catch(() => {
+      router.replace({ path: '/Login', replace: true, })
+    })
 }
 export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路由字符串，转换为组件对象
   const accessedRouters = asyncRouterMap.filter(route => {
@@ -116,16 +116,16 @@ export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路�
       if (route.component) {
         if (route.component === 'Layout') {//Layout组件特殊处理
           route.component = Layout
-          if( route.children && route.children.length >= 1 ){  //避免无子菜单时的生成失败
-            route.redirect =route.path +'/'+ route.children[0].path
+          if (route.children && route.children.length >= 1) {  //避免无子菜单时的生成失败
+            route.redirect = route.path + '/' + route.children[0].path
           }
         } else {
           route.component = _import(route.component)
         }
         route.name = route.title
         route.meta = {
-          id:route.id,
-          type:route.type
+          id: route.id,
+          type: route.type
         }
       }
       menus.push(route)
@@ -151,7 +151,7 @@ export function validMenu(to) {
         return true
       }
     }
-    console.info('Not Find to Page Redirect to 404 page',to)
+    console.info('Not Find to Page Redirect to 404 page', to)
     return false
   }
   return true

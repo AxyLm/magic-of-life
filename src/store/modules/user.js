@@ -1,9 +1,9 @@
 import axios from '@/utils/request';
 const user = {
     state: {
-        userInfo:{},
+        userInfo: {},
         router: false,
-        token:"",
+        token: "",
     },
 
     mutations: {
@@ -20,19 +20,15 @@ const user = {
     },
 
     actions: {
-        Login( { commit }, userInfo){
-            const data = userInfo
-            commit("SET_USERINFO" , {
-                name:data.name,
-                roles:data.roles,
-                username:data.username,
+        Login({ commit }, userInfo) {
+            const { username, account, avatar, phone, emile, rolecode, rolename, token } = userInfo
+            commit("SET_USERINFO", {
+                username, account, avatar, phone, emile, rolecode, rolename
             })
-            commit("SET_TOKEN",data.token)
-            commit("SET_ROUTER",data.route)
+            commit("SET_TOKEN", token)
         },
-        SetRouter( {commit}, data){
-            commit("SET_ROUTER",data)
-            
+        SetRouter({ commit }, data) {
+            commit("SET_ROUTER", data)
         }
     }
 }
