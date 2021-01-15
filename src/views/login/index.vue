@@ -192,7 +192,7 @@ export default {
     width: 100vw;
     height:100vh;
     display: flex;
-    background-image: url("../../assets/91564913.webp") ,url("../../assets/91564913.jpg");
+    // background-image: url("../../assets/91564913.webp") ,url("../../assets/91564913.jpg");
     justify-content: center;
     align-items: center;
     background-position: center;

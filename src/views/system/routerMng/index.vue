@@ -201,7 +201,7 @@ export default {
             })
         },
         getRole(){
-            this.$axios.post('/users/getrole')
+            this.$axios.post('/role/getrole')
             .then((res)=>{
                 if(res.code == 0){
                 this.allroles = res.data

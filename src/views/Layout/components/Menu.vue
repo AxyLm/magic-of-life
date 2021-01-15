@@ -2,7 +2,7 @@
   <keep-alive>
     <a-menu :theme="theme" mode="inline" :default-selected-keys="selMenu" :default-open-keys="openMenu"  :selectedKeys='selMenu'>
       <template v-for="item in menus">
-        <a-menu-item v-if="!item.children" :key="item.id">
+        <a-menu-item v-if="item.children&&item.children.length == '1'" :key="item.id">
           <router-link :to="item.route">
             <a-icon :type="item.icon" />
             <span>{{ item.title }}</span>
@@ -65,6 +65,7 @@ export default {
     },
     computed: {
       menus() {
+        console.log(this.$store.state.user.router)
         return this.$store.state.user.router
       }
     },

@@ -61,22 +61,23 @@ router.beforeEach((to, from, next) => {
     token = localStorage.getItem('uToken')
   }
   NProgress.start()
-  if(token){
-    if(to.path == '/Login'){
-      next()
-      NProgress.done()
-    }else{
+
+  if (whiteList.indexOf(to.path) > -1) {
+    next()
+    NProgress.done()
+    return
+  } else {
+    if(token){
       if(!getRouter){
         getRouter = true
         routerGo(to, next)
-      }else{
-        next()
+      } else {
+        if (to.path == '/') {
+          routerGo(to, next)
+        } else {
+          next()
+        }
       }
-    }
-  }else{
-    if( whiteList.indexOf(to.path) > -1 ){
-      next()
-      return // 避免跳转失败
     }else{
       next({path:'/Login'})
     }
@@ -86,28 +87,27 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from) => {
   NProgress.done()
 })
-function routerGo(to, next){
-  var userInfo = store.state.user.userInfo
-  console.log(to)
-  axios.post('/users/getAuthRouter',{
+async function routerGo(to){
+  let userInfo = store.state.user.userInfo
+  await axios.post('/users/getAuthRouter',{
     "role":userInfo.roles,
   })
-  .then((res)=>{
+  .then((res) => {
     if (res.code == 0) {
       let routerList =  res.data
-      store.dispatch('SetRouter',res.data)
       let getRouter = filterAsyncRouter(routerList) //过滤路由
       router.addRoutes(getRouter) //
+      store.dispatch('SetRouter',res.data)
       if(to.path == '/'){
-        next({ path:getRouter[0].path, replace: true })
+        router.replace({ path:getRouter[0].path, replace: true ,name:getRouter[0].name })
       }else{
-        next(to)
+        router.replace(to)
       }
     }else{
-      next({path:'/Login'})
+      router.replace({path:'/Login',replace: true ,})
     }
   }).catch(()=>{
-    next({path:'/Login'})
+    router.replace({path:'/Login',replace: true ,})
   })
 }
 export function filterAsyncRouter(asyncRouterMap) { // 遍历后台传来的路由字符串，转换为组件对象
