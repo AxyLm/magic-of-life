@@ -74,6 +74,7 @@
   "dependencies": {
     "html-entities": "^2.0.1",
     "moment": "^2.29.1",
-    "nprogress": "^0.2.0"
+    "nprogress": "^0.2.0",
+    "vue-progressive-image": "^3.2.0"
   }
 }

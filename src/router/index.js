@@ -44,7 +44,7 @@ let router = new VueRouter({
   scrollBehavior: () => ({ y: 0 })
 })
 
-const whiteList = ['/Login', '/Error', '/Error/404'] // 不重定向白名单
+const whiteList = ['/Login', '/Error', '/Error/404', "/404"] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
   if (OutSys.checkOutSysUrl(to)) {
@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
     return
   }
   if (!validMenu(to)) {
-    next({ path: '/Error/404', query: { from: from.path } })
+    next({ path: '/Error/404', query: from })
   }
 
   let token = store.state.user.token
@@ -93,6 +93,12 @@ async function routerGo(to) {
     "role": userInfo.rolecode,
   })
     .then((res) => {
+      let userinfo = JSON.parse(localStorage.getItem("userInfo"))
+      if (userinfo && userinfo.token && userinfo.account) {
+        store.dispatch("Set_UserInfo", userinfo)
+      } else {
+        throw "用户信息不存在"
+      }
       if (res.code == 0) {
         let routerList = res.data
         let getRouter = filterAsyncRouter(routerList) //过滤路由
@@ -151,7 +157,6 @@ export function validMenu(to) {
         return true
       }
     }
-    console.info('Not Find to Page Redirect to 404 page', to)
     return false
   }
   return true

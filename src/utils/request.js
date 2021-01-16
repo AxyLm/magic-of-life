@@ -1,9 +1,13 @@
 import axios from 'axios'
+import { Modal } from 'ant-design-vue';
+import store from '../store'
+
+
 
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
   timeout: 30 * 1000, // 请求超时时间
-  method:'post',
+  method: 'post',
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
   },
@@ -34,8 +38,21 @@ service.interceptors.request.use(
 // Add a response interceptor
 service.interceptors.response.use(
   function (response) {
-    // Do something with response data
-    return Promise.resolve(response.data)
+    const data = response.data
+    if (response.data.code >= 4990) {
+      Modal.error({
+        maskClosable: false,
+        centered: true,
+        content: "请重新登录",
+        onOk: function () {
+          store.dispatch("SIGN_OUT")
+        }
+      });
+      return Promise.reject(data)
+    } else {
+      // Do something with response data
+      return Promise.resolve(data)
+    }
   },
   function (error) {
     console.log(error)

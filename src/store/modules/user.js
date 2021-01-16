@@ -20,12 +20,20 @@ const user = {
     },
 
     actions: {
-        Login({ commit }, userInfo) {
-            const { username, account, avatar, phone, emile, rolecode, rolename, token } = userInfo
+        Login({ commit, dispatch }, userInfo) {
+            dispatch("Set_UserInfo", userInfo)
+            const { token } = userInfo
+            commit("SET_TOKEN", token)
+        },
+        SIGN_OUT({ commit }, e) {
+            localStorage.removeItem("uToken")
+            window.location.href = "/Login"
+        },
+        Set_UserInfo({ commit }, userInfo) {
+            const { username, account, avatar, phone, emile, rolecode, rolename } = userInfo
             commit("SET_USERINFO", {
                 username, account, avatar, phone, emile, rolecode, rolename
             })
-            commit("SET_TOKEN", token)
         },
         SetRouter({ commit }, data) {
             commit("SET_ROUTER", data)

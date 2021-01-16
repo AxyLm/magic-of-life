@@ -11,30 +11,31 @@ import axios from '@/utils/request'
 
 import 'ant-design-vue/dist/antd.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
+import VueProgressiveImage from 'vue-progressive-image'
 
-
+Vue.use(VueProgressiveImage);
 Vue.use(Antd);
 Vue.prototype.$axios = axios
-const el_scrollBar = (el) =>{
-  if(el._ps instanceof PerfectScrollBar) {
+const el_scrollBar = (el) => {
+  if (el._ps instanceof PerfectScrollBar) {
     el._ps.update()
-  }else{
-    el._ps_ = new PerfectScrollBar(el,{suppressScrollX: true})
+  } else {
+    el._ps_ = new PerfectScrollBar(el, { suppressScrollX: true })
   }
 }
 // 自定义指令
-Vue.directive('scrollBar',{
-  inserted(el,binding,vnode) {
-    const rules = ['fixed','absolute','relative']
-    if(!rules.includes(window.getComputedStyle(el,null).position)){
+Vue.directive('scrollBar', {
+  inserted(el, binding, vnode) {
+    const rules = ['fixed', 'absolute', 'relative']
+    if (!rules.includes(window.getComputedStyle(el, null).position)) {
       console.error(`perfect-scroll所在的容器属性position错误`)
     }
     el_scrollBar(el)
   },
-  componentUpdated(el,binding,vnode,oldVnode){
+  componentUpdated(el, binding, vnode, oldVnode) {
     try {
       vnode.context.$nextTick(
-        ()=>{
+        () => {
           el_scrollBar(el)
         }
       )

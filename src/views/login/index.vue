@@ -1,5 +1,10 @@
 <template>
 	<div id="Login">
+		<div
+			id="login_bg"
+			:class="load ? 'is-loaded' : 'not-loaded'"
+			:style="{ backgroundImage: loginBg, filter: loginFilter }"
+		></div>
 		<a-card :hoverable="true" class="card">
 			<img
 				slot="cover"
@@ -50,6 +55,8 @@
 	</div>
 </template>
 <script>
+	import LoginBg from "@/assets/91564913.jpg";
+	import LoginBgLazy from "@/assets/91564913.webp";
 	export default {
 		name: "Login",
 		data() {
@@ -187,10 +194,25 @@
 						],
 					},
 				],
+				load: true,
 				loginLoading: false,
+				loginBg: `"url('${LoginBgLazy}')"`,
+				loginFilter: "blur(20px)",
+			};
+		},
+		created() {
+			var img = new Image();
+			img.src = LoginBg;
+			img.onload = () => {
+				this.loginBg = `url('${LoginBg}')`;
+				this.load = false;
+				this.loginFilter = "blur(0)";
 			};
 		},
 		methods: {
+			imgOnload(e) {
+				console.log("img onload", e);
+			},
 			Login() {
 				this.$refs.userInfo.validate((valid) => {
 					if (valid) {
@@ -256,17 +278,26 @@
 	width: 100vw;
 	height: 100vh;
 	display: flex;
-	background-image: url("../../assets/91564913.webp"),
-		url("../../assets/91564913.jpg");
+	// background-image: url("../../assets/91564913.webp"),
+	// 	url("../../assets/91564913.jpg");
 	justify-content: center;
 	align-items: center;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
+	position: relative;
+	overflow: hidden;
 	.card {
 		max-width: 90%;
 		position: relative;
 		z-index: 2;
+	}
+	#login_bg {
+		background-image: url("../../assets/91564913.webp");
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		position: absolute;
+		z-index: 1;
+		width: 100vw;
+		height: 100vh;
 	}
 }
 .backLazy {
@@ -290,6 +321,26 @@
 @media screen and (max-width: 576px) {
 	#Login {
 		background-size: auto 100%;
+	}
+}
+
+.not-loaded {
+	filter: blur(0);
+	// transform: scale(1);
+}
+
+.is-loaded {
+	filter: blur(20px);
+	animation: sharpen 0.5s both;
+	// transform: scale(1.1);
+}
+
+@keyframes sharpen {
+	from {
+		filter: blur(20px);
+	}
+	to {
+		filter: blur(0px);
 	}
 }
 </style>
