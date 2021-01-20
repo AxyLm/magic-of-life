@@ -35,11 +35,13 @@ service.interceptors.request.use(
   }
 );
 
+const passUrl = ["/users/getAuthRouter"] // 接口白名单
 // Add a response interceptor
 service.interceptors.response.use(
   function (response) {
     const data = response.data
-    if (response.data.code >= 4990) {
+    const requestUrl = response.config.url
+    if (passUrl.indexOf(requestUrl) == -1 && response.data.code >= 4990) {
       Modal.error({
         maskClosable: false,
         centered: true,
