@@ -1,21 +1,30 @@
 # magic-of-life
 
-> A Vue.js project
+English | [简体中文](./README.zh-CN.md)
 
-## Build Setup
+## Install
 
 ``` bash
 # install dependencies
 npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Start
+``` bash
+# serve with hot reload at localhost:8080
+npm start
+# or
+npm run dev
+```
+## Build
+``` bash
+# build for production with minification
+npm run build
+```
+
+## Related project
+web server :[magic-of-life-web](https://github.com/AxyLm/magic-of-life-web.git)
+
+
+## License
+[Apache](LICENSE) ©
