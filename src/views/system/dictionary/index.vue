@@ -3,24 +3,20 @@
 		<a-card class="form">
 			<a-form-model :model="info" ref="seachForm" v-bind="layout">
 				<a-row>
-					<a-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-						<a-form-model-item label="账户" prop="account">
-							<a-input v-model="info.account" disabled> </a-input>
+					<a-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6" :xxl="6">
+						<a-form-model-item label="字典归属" prop="vested">
+							<a-input v-model="info.vested"> </a-input>
 						</a-form-model-item>
 					</a-col>
-					<a-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-						<a-form-model-item label="用户名" prop="username" lab>
-							<a-input v-model="info.username" disabled>
+					<a-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6" :xxl="6">
+						<a-form-model-item label="字典名称" prop="data" lab>
+							<a-input v-model="info.data">
 							</a-input>
 						</a-form-model-item>
 					</a-col>
-					<a-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-						<a-form-model-item label="角色" prop="rolecode">
-							<a-input
-								v-model="info.rolecode"
-								type="text"
-								disabled
-							>
+					<a-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6" :xxl="6">
+						<a-form-model-item label="字段代码" prop="code">
+							<a-input v-model="info.code" type="text">
 							</a-input>
 						</a-form-model-item>
 					</a-col>
@@ -28,15 +24,15 @@
 			</a-form-model>
 			<a-row justify="end" type="flex">
 				<a-col>
-					<a-button type="primary" @click="queryRole(1)"
+					<a-button type="primary" @click="query(1)"
 						>查询</a-button
 					>
 					<router-link
-						:to="{ path: 'userInfo', query: { type: 'add' } }"
+						:to="{ path: 'dicInfo', query: { type: 'add' } }"
 					>
 						<a-button type="">新增</a-button>
 					</router-link>
-					<a-button type="" @click="resetForm('seachForm')" disabled
+					<a-button type="" @click="resetForm('seachForm')"
 						>重置</a-button
 					>
 				</a-col>
@@ -50,47 +46,37 @@
 				:title="false"
 			>
 				<a-table
-					:data-source="userList"
+					:data-source="tableData"
 					bordered
 					:pagination="false"
 					:loading="tableLoading"
 				>
 					<a-table-column
-						key="userId"
-						title="用户Id"
-						data-index="userId"
+						key="vested"
+						title="字段归属"
+						data-index="vested"
 					/>
 					<a-table-column
-						key="account"
-						title="账号"
-						data-index="account"
+						key="data"
+						title="字典名称"
+						data-index="data"
 					/>
 					<a-table-column
-						key="username"
-						title="用户名"
-						data-index="username"
+						key="code"
+						title="字典代码"
+						data-index="code"
 					/>
 					<a-table-column
-						key="roles"
-						title="角色"
-						data-index="rolecode"
+						key="remark"
+						title="备注"
+						data-index="remark"
 					/>
-					<a-table-column
-						key="phone"
-						title="手机号"
-						data-index="phone"
-					/>
-					<a-table-column
-						key="emile"
-						title="邮箱"
-						data-index="emile"
-					/>
-					<a-table-column key="action" title="操作" width="150px">
+					<a-table-column key="action" title="操作" width="200px">
 						<template slot-scope="operating">
 							<a-col>
 								<router-link
 									:to="{
-										path: 'userInfo',
+										path: 'dicInfo',
 										query: { type: 'edit', ...operating },
 									}"
 								>
@@ -98,12 +84,22 @@
 										>修改</a-button
 									>
 								</router-link>
-								<!-- <a-popconfirm title="确定删除么?" @confirm="delRole(operating)"> -->
-								<!-- <a-icon slot="icon" type="delete" style="color: red" /> -->
-								<a-button type="danger" size="small" disabled
+                                <router-link
+									:to="{
+										path: 'dicInfo',
+										query: { type: 'copy', ...operating },
+									}"
+								>
+									<a-button size="small"
+										>复制</a-button
+									>
+								</router-link>
+								<a-popconfirm title="确定删除么?" @confirm="ListDel(operating)">
+								<a-icon slot="icon" type="delete" style="color: red" />
+								<a-button type="danger" size="small"
 									>删除</a-button
 								>
-								<!-- </a-popconfirm> -->
+								</a-popconfirm>
 							</a-col>
 						</template>
 					</a-table-column>
@@ -127,11 +123,12 @@
 		name: "role",
 		data() {
 			return {
-				userList: [],
+				tableData: [],
 				info: {
+					vested: "",
 					code: "",
-					name: "",
-					roles: "",
+                    data: "",
+					remark: "",
 				},
 				layout: {
 					labelCol: {
@@ -148,7 +145,7 @@
 					},
 				},
 				current: 0,
-				pageSize: 5,
+				pageSize: 20,
 				pageIndex: 1,
 				total: 0,
 				tableLazy: true,
@@ -156,25 +153,29 @@
 			};
 		},
 		created() {
-			this.queryRole(1);
+            this.query(1);
+            this.$axios.post("/system/getDataCode", {
+                        vested:"ROUTER_TYPE",
+					})
 		},
 		methods: {
-			delRole(item) {
+			ListDel(item) {
 				console.log(item);
-				this.$axios.post("/users/delrole", item).then((res) => {
-					this.queryRole();
+				this.$axios.post("/system/delDataCode", item).then((res) => {
+					this.query();
 				});
 			},
-			queryRole(pageIndex) {
+			query(pageIndex) {
 				this.tableLoading = true;
 				this.$axios
-					.post("/user/getUserListByPage", {
+					.post("/system/getDataCodeByPage", {
+                        ...this.info,
 						pageSize: this.pageSize,
 						pageIndex: pageIndex || this.pageIndex,
 					})
 					.then((res) => {
 						if (res.code == 0) {
-							this.userList = res.data.list;
+							this.tableData = res.data.list;
 							this.total = res.data.count;
 							this.current = res.data.pageIndex;
 						}
@@ -187,8 +188,7 @@
 					});
 			},
 			pageChange(page, pageSize) {
-				console.log(page);
-				this.queryRole(page);
+				this.query(page);
 			},
 			resetForm(formName) {
 				this.$refs[formName].resetFields();

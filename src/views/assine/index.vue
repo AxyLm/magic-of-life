@@ -1,7 +1,6 @@
 <template>
   <div id="home">
     <a-layout id="components-layout-demo-top" class="layout">
-      <a-layout-header class="app_header"></a-layout-header>
       <a-layout-content class="content">
         <a-row :gutter="[10,10]">
           <a-col :span="24">
@@ -64,6 +63,15 @@
               </a-col>
             </a-card>
           </a-col>
+          <!-- <a-col :span="5" :xs="24" :md="4" :lg="6">
+            <a-card title="内存" style="width: 100%;height:100%">
+              <a-col style="text-align: center;" :span="24">
+                <a-skeleton active avatar :loading='!(mem&&mem.percent)' :paragraph='false' :title='false' size='large'>
+                  <a-progress type="dashboard" :percent="mem.percent" style="margin:auto" />
+                </a-skeleton>
+              </a-col>
+            </a-card>
+          </a-col> -->
           <a-col :span="5" :xs="24" :md="12" :lg="12" class="col-xs">
             <a-card title="内存" style="width: 100%;height:100%">
               <a-col style="text-align: center;" :span="10">
@@ -119,7 +127,7 @@ import { Liquid } from '@antv/g2plot';
 import mCpu from './components/mcpu'
 import mFs from './components/mfs'
 import DiskIo from './components/diskIo'
-import NetWork from './components/netWork'
+import NetWork from './components/netWorkEcharts'
 export default {
   name:'glances_web',
   components: {
@@ -198,27 +206,30 @@ export default {
       this.memPerent.render()
     },
     init() {
-      this.$axios.post('/monit/rpiMonit')
+      this.$axios.post('http://192.168.0.106:9233/life/monit/rpiMonit')
       .then((res) => {
-        let data = res.data;
-        this.cpu = data.cpu;
-        this.system = data.system;
-        this.uptime = data.uptime;
-        this.details = data;
-        this.fs = data.fs;
-        this.systemTime = data.now;
-        this.mem = data.mem;
-        this.diskio = data.diskio
-        this.trafficList = data.network
-        this.skeleton = false;
-        this.cpu.percpu = data.quicklook.percpu;
-
-        this.times = setTimeout(()=>{
-          this.init();
-        },5000)
+        if(res.code == 0){
+          let data = res.data;
+          this.cpu = data.cpu;
+          this.system = data.system;
+          this.uptime = data.uptime;
+          this.details = data;
+          this.fs = data.fs;
+          this.systemTime = data.now;
+          this.mem = data.mem;
+          this.diskio = data.diskio
+          this.trafficList = data.network
+          this.skeleton = false;
+          this.cpu.percpu = data.quicklook.percpu;
+        }
+          this.times = setTimeout(()=>{
+            this.init();
+          },5000)
       })
       .catch((err) => {
-        console.warn(err);
+        this.times = setTimeout(()=>{
+            this.init();
+          },5000)
       });
     },
   },
@@ -230,11 +241,8 @@ export default {
   display: none;
 }
 .content{
-  height: 100%; 
   padding:0 10px;
   background-color: #fff;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 .app_footer{
   height: 50px;

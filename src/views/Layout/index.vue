@@ -178,7 +178,7 @@
 }
 
 .footer {
-	text-align: center;
+	text-align: right;
 	padding: 0 !important;
 	background: #fff;
 	font-size: 13px;

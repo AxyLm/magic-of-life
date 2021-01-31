@@ -170,9 +170,9 @@
 										<a-select-option
 											v-for="(item, index) in allroles"
 											:key="index + item"
-											:value="item.code"
+											:value="item.rolecode"
 										>
-											{{ item.name }}
+											{{ item.rolename }}
 										</a-select-option>
 									</a-select>
 								</a-form-item>
