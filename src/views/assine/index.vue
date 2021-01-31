@@ -123,10 +123,8 @@
 </template>
 
 <script>
-import { Liquid } from '@antv/g2plot';
 import mCpu from './components/mcpu'
 import mFs from './components/mfs'
-import DiskIo from './components/diskIo'
 import NetWork from './components/netWorkEcharts'
 export default {
   name:'glances_web',
@@ -188,25 +186,8 @@ export default {
     // this.initChart()
   },
   methods: {
-    initChart(){
-      this.memPerent = new Liquid(this.$refs.percent, {
-        title: {
-          visible: true,
-          text: '内存占用',
-        },
-        statictic:{
-          style:{
-            fontSize: 12,
-          }
-        },
-        min: 0,
-        max: 100,
-        value: 10,
-      });
-      this.memPerent.render()
-    },
     init() {
-      this.$axios.post('http://192.168.0.106:9233/life/monit/rpiMonit')
+      this.$axios.post('/monit/rpiMonit')
       .then((res) => {
         if(res.code == 0){
           let data = res.data;
@@ -221,6 +202,9 @@ export default {
           this.trafficList = data.network
           this.skeleton = false;
           this.cpu.percpu = data.quicklook.percpu;
+        }
+        if(res.code > 4990 && res.code < 5010){
+          return false
         }
           this.times = setTimeout(()=>{
             this.init();

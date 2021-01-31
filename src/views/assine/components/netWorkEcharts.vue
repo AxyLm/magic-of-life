@@ -42,7 +42,8 @@
 					series: [
 						{
 							name: "上行",
-                            type: "line",
+							type: "line",
+							smooth: true,
                             itemStyle: {
                                 color: '#0770FF'
                             },
@@ -68,7 +69,8 @@
 						},
 						{
 							name: "下行",
-                            type: "line",
+							type: "line",
+       				     	smooth: true,
                             itemStyle: {
                                 color: '#F2597F'
                             },
