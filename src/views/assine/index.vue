@@ -217,6 +217,9 @@ export default {
       });
     },
   },
+  destroyed(){
+    clearTimeout(this.times)
+  }
 };
 </script>
 
