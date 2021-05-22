@@ -8,6 +8,9 @@
         <a-form-model-item label="用户名" prop="usersName">
           <a-input v-model="info.usersName" type="text" />
         </a-form-model-item>
+        <a-form-model-item label="用户Id" prop="uId">
+          <a-input v-model="info.uId" type="text" />
+        </a-form-model-item>
         <a-form-model-item label="账户" prop="account">
           <a-input v-model="info.account" type="text" />
         </a-form-model-item>
@@ -16,8 +19,8 @@
         </a-form-model-item>
         <a-form-model-item label="角色" prop="role">
           <a-select v-model="info.role">
-            <a-select-option v-for="(item,index) in roleList" :key="index+item" :value='item.roles'>
-                {{item.name}}
+            <a-select-option v-for="(item,index) in roleList" :key="index+item" :value='item.rolecode'>
+                {{item.rolename}}
             </a-select-option>
         </a-select>
         </a-form-model-item>
@@ -53,10 +56,12 @@ export default {
           phone:"",
           emile:"",
           avatar:"",
-          account:""
+          account:"",
+          uId:"",
       },
       title: "新增用户",
       rules: {
+        uId: [{ required: true, message: "用户名不能为空" }],
         usersName: [{ required: true, message: "用户名不能为空" }],
         password: [{ required: true, message: "密码不能为空" }],
         account: [{ required: true, message: "账户不能为空" }],
@@ -85,6 +90,7 @@ export default {
       if (this.$route.query.type == "edit") {
         url = "edituser";
       }
+      item.rolecode = item.role
       this.$axios
         .post("/user/" + url, item )
         .then((res) => {
